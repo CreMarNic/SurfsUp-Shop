@@ -1,0 +1,28 @@
+{
+  "name": "SurfsUp Shop",
+  "description": "Modern e-commerce platform built with Sylius for surf gear and lifestyle products",
+  "repository": "https://github.com/CreMarNic/SurfsUp-Shop",
+  "logo": "https://raw.githubusercontent.com/CreMarNic/SurfsUp-Shop/main/public/images/surfsup/surf-1.jpg",
+  "keywords": ["php", "sylius", "ecommerce", "surf", "symfony"],
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "php bin/console sylius:install --no-interaction"
+  },
+  "env": {
+    "SYMFONY_ENV": {
+      "description": "Symfony environment",
+      "value": "prod"
+    },
+    "DATABASE_URL": {
+      "description": "Database connection string",
+      "value": "sqlite:///%kernel.project_dir%/var/data.db"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": []
+}
