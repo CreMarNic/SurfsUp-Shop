@@ -1,0 +1,361 @@
+sylius_fixtures:
+    suites:
+        surfsup_only:
+            fixtures:
+                locale:
+                    options:
+                        custom:
+                            - code: 'en_US'
+                              name: 'English (United States)'
+                
+                currency:
+                    options:
+                        custom:
+                            - code: 'USD'
+                              name: 'US Dollar'
+                              exchange_rate: 1.0
+                
+                geographical:
+                    options:
+                        custom:
+                            - code: 'US'
+                              name: 'United States'
+                
+                taxon:
+                    options:
+                        custom:
+                            category:
+                                code: 'SURF_CATEGORY'
+                                name: 'Surf Category'
+                                translations:
+                                    en_US:
+                                        name: 'Surf Category'
+                                children:
+                                    -   code: 'boards'
+                                        name: 'Boards'
+                                        slug: 'boards'
+                                        translations:
+                                            en_US:
+                                                name: 'Boards'
+                                        children:
+                                            -   code: 'longboards'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Longboards'
+                                                        slug: 'boards/longboards'
+                                            -   code: 'shortboards'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Shortboards'
+                                                        slug: 'boards/shortboards'
+                                            -   code: 'windboards'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Windboards'
+                                                        slug: 'boards/windboards'
+                                    -   code: 'mens'
+                                        name: 'Mens'
+                                        slug: 'mens'
+                                        translations:
+                                            en_US:
+                                                name: 'Mens'
+                                        children:
+                                            -   code: 'mens_shorts'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Shorts'
+                                                        slug: 'mens/shorts'
+                                            -   code: 'mens_shirts'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Shirts'
+                                                        slug: 'mens/shirts'
+                                    -   code: 'womens'
+                                        name: 'Womens'
+                                        slug: 'womens'
+                                        translations:
+                                            en_US:
+                                                name: 'Womens'
+                                        children:
+                                            -   code: 'womens_bathing_suits'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Bathing Suits'
+                                                        slug: 'womens/bathing-suits'
+                                            -   code: 'womens_shirts'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Shirts'
+                                                        slug: 'womens/shirts'
+                                    -   code: 'accessories'
+                                        name: 'Accessories'
+                                        slug: 'accessories'
+                                        translations:
+                                            en_US:
+                                                name: 'Accessories'
+                                        children:
+                                            -   code: 'caps'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Caps'
+                                                        slug: 'accessories/caps'
+                                            -   code: 'wetsuits'
+                                                translations:
+                                                    en_US:
+                                                        name: 'Wetsuits'
+                                                        slug: 'accessories/wetsuits'
+                
+                channel:
+                    options:
+                        custom:
+                            -   code: 'SURF_WEB'
+                                name: 'SurfsUp Shop'
+                                hostname: 'localhost:8000'
+                                color: '#0066cc'
+                                enabled: true
+                                default_locale: 'en_US'
+                                base_currency: 'USD'
+                                default_tax_zone: 'US'
+                                tax_calculation_strategy: 'order_items_based'
+                                shipping_address_in_checkout_required: true
+                                billing_address_in_checkout_required: true
+                
+                payment_method:
+                    options:
+                        custom:
+                            -   code: 'credit_card'
+                                name: 'Credit Card'
+                                description: 'Pay with credit card'
+                                enabled: true
+                                channels:
+                                    - 'SURF_WEB'
+                
+                shipping_method:
+                    options:
+                        custom:
+                            -   code: 'standard_shipping'
+                                name: 'Standard Shipping'
+                                description: 'Standard shipping method'
+                                enabled: true
+                                channels:
+                                    - 'SURF_WEB'
+                
+                customer_group:
+                    options:
+                        custom:
+                            -   code: 'retail'
+                                name: 'Retail'
+                
+                shop_user:
+                    options:
+                        custom:
+                            -   email: 'customer@surfsup.com'
+                                password: 'password'
+                                first_name: 'John'
+                                last_name: 'Doe'
+                                customer_group: 'retail'
+                
+                admin_user:
+                    options:
+                        custom:
+                            -   email: 'admin@surfsup.com'
+                                password: 'password'
+                                first_name: 'Admin'
+                                last_name: 'User'
+                
+                tax_category:
+                    options:
+                        custom:
+                            -   code: 'clothing'
+                                name: 'Clothing'
+                            -   code: 'equipment'
+                                name: 'Surf Equipment'
+                
+                tax_rate:
+                    options:
+                        custom:
+                            -   code: 'clothing_tax'
+                                name: 'Clothing Tax'
+                                amount: 0.08
+                                category: 'clothing'
+                                zone: 'US'
+                            -   code: 'equipment_tax'
+                                name: 'Equipment Tax'
+                                amount: 0.10
+                                category: 'equipment'
+                                zone: 'US'
+                
+                product_attribute:
+                    options:
+                        custom:
+                            -   name: 'Surf Brand'
+                                code: 'surf_brand'
+                                type: 'text'
+                            -   name: 'Surf Material'
+                                code: 'surf_material'
+                                type: 'text'
+                            -   name: 'Board Length'
+                                code: 'board_length'
+                                type: 'text'
+                            -   name: 'Board Volume'
+                                code: 'board_volume'
+                                type: 'text'
+                            -   name: 'Clothing Size'
+                                code: 'clothing_size'
+                                type: 'text'
+                            -   name: 'Wetsuit Thickness'
+                                code: 'wetsuit_thickness'
+                                type: 'text'
+                
+                product:
+                    options:
+                        custom:
+                            # Boards Category
+                            -   name: 'Classic Longboard 9-6'
+                                code: 'LONGBOARD_001'
+                                slug: 'classic-longboard-96'
+                                enabled: true
+                                main_taxon: 'longboards'
+                                taxons:
+                                    - 'boards'
+                                    - 'longboards'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Fiberglass'
+                                    board_length: '9-6'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'equipment'
+
+                            -   name: 'Performance Shortboard 6-0'
+                                code: 'SHORTBOARD_001'
+                                slug: 'performance-shortboard-60'
+                                enabled: true
+                                main_taxon: 'shortboards'
+                                taxons:
+                                    - 'boards'
+                                    - 'shortboards'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Epoxy'
+                                    board_length: '6-0'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'equipment'
+
+                            -   name: 'Beginner Windboard 120L'
+                                code: 'WINDBOARD_001'
+                                slug: 'beginner-windboard-120l'
+                                enabled: true
+                                main_taxon: 'windboards'
+                                taxons:
+                                    - 'boards'
+                                    - 'windboards'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Carbon Fiber'
+                                    board_volume: '120L'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'equipment'
+
+                            # Men's Category
+                            -   name: 'Classic Board Shorts'
+                                code: 'MENS_SHORTS_001'
+                                slug: 'classic-board-shorts'
+                                enabled: true
+                                main_taxon: 'mens_shorts'
+                                taxons:
+                                    - 'mens'
+                                    - 'mens_shorts'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Quick-dry fabric'
+                                    clothing_size: 'S, M, L, XL'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'clothing'
+
+                            -   name: 'Classic Surf T-Shirt'
+                                code: 'MENS_SHIRT_001'
+                                slug: 'classic-surf-t-shirt'
+                                enabled: true
+                                main_taxon: 'mens_shirts'
+                                taxons:
+                                    - 'mens'
+                                    - 'mens_shirts'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: '100% Cotton'
+                                    clothing_size: 'S, M, L, XL'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'clothing'
+
+                            # Women's Category
+                            -   name: 'Classic Bikini Set'
+                                code: 'WOMENS_BIKINI_001'
+                                slug: 'classic-bikini-set'
+                                enabled: true
+                                main_taxon: 'womens_bathing_suits'
+                                taxons:
+                                    - 'womens'
+                                    - 'womens_bathing_suits'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Swim fabric'
+                                    clothing_size: 'XS, S, M, L'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'clothing'
+
+                            -   name: 'Surf Tank Top'
+                                code: 'WOMENS_SHIRT_001'
+                                slug: 'surf-tank-top'
+                                enabled: true
+                                main_taxon: 'womens_shirts'
+                                taxons:
+                                    - 'womens'
+                                    - 'womens_shirts'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: '100% Cotton'
+                                    clothing_size: 'XS, S, M, L'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'clothing'
+
+                            # Accessories Category
+                            -   name: 'Classic Baseball Cap'
+                                code: 'CAP_001'
+                                slug: 'classic-baseball-cap'
+                                enabled: true
+                                main_taxon: 'caps'
+                                taxons:
+                                    - 'accessories'
+                                    - 'caps'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Cotton'
+                                    clothing_size: 'One Size'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'clothing'
+
+                            -   name: '3mm Wetsuit'
+                                code: 'WETSUIT_001'
+                                slug: '3mm-wetsuit'
+                                enabled: true
+                                main_taxon: 'wetsuits'
+                                taxons:
+                                    - 'accessories'
+                                    - 'wetsuits'
+                                product_attributes:
+                                    surf_brand: 'SurfsUp'
+                                    surf_material: 'Neoprene'
+                                    wetsuit_thickness: '3mm'
+                                channels:
+                                    - 'SURF_WEB'
+                                tax_category: 'equipment'
+
+

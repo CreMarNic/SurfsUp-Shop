@@ -1,0 +1,191 @@
+{% extends '@SyliusAdmin/shared/layout/base.html.twig' %}
+
+{% block title %}
+    🏄‍♂️ Surf Products - Admin Dashboard
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid" style="padding: 20px; background: #f8f9fa; min-height: 100vh;">
+        <!-- Simple Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1 style="color: #2c3e50; margin: 0; font-size: 2rem; font-weight: 300;">
+                                🏄‍♂️ Surf Products
+                            </h1>
+                            <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 1.1rem;">
+                                Manage your surf shop products
+                            </p>
+                        </div>
+                        <a href="{{ path('sylius_admin_product_create') }}" 
+                           style="padding: 12px 24px; background: #0066cc; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;"
+                           onmouseover="this.style.backgroundColor='#0056b3'" 
+                           onmouseout="this.style.backgroundColor='#0066cc'">
+                            ➕ Add New Product
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="row">
+            <!-- Boards Category -->
+            <div class="col-12 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">🏄‍♂️ Boards</h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">🏄‍♂️</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Longboard 9-6</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Perfect for beginners</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">🏄‍♂️</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Performance Shortboard 6-0</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">High-performance board</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">🏄‍♂️</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Beginner Windboard 120L</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Stable windboard</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Men's Category -->
+            <div class="col-12 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">👨 Men's</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">👕</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Board Shorts</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Comfortable board shorts</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">👕</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Surf T-Shirt</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">100% Cotton t-shirt</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Women's Category -->
+            <div class="col-12 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">👩 Women's</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">👙</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Bikini Set</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Stylish bikini set</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">👕</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Surf Tank Top</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Comfortable tank top</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accessories Category -->
+            <div class="col-12 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">🎽 Accessories</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">🧢</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Baseball Cap</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">SurfsUp logo cap</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                 onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                 onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">🤿</div>
+                                <h4 style="color: #2c3e50; margin: 0 0 10px 0;">3mm Wetsuit</h4>
+                                <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Neoprene wetsuit</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                    <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

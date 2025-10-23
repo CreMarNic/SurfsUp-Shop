@@ -1,0 +1,146 @@
+{# Simplified Product Form for Surf Shop #}
+
+{% form_theme form '@SyliusAdmin/product/form_theme.html.twig' %}
+
+<div class="container-fluid" style="padding: 20px; background: #f8f9fa; min-height: 100vh;">
+    <!-- Simple Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h1 style="color: #2c3e50; margin: 0; font-size: 2rem; font-weight: 300;">
+                        {% if resource.id %}
+                            Edit Product: {{ resource.name }}
+                        {% else %}
+                            Add New Surf Product
+                        {% endif %}
+                    </h1>
+                <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 1.1rem;">
+                    {% if resource.id %}
+                        Update your surf product details
+                    {% else %}
+                        Create a new product for your surf shop
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simplified Product Form -->
+    <div class="row">
+        <div class="col-12">
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                {{ form_start(form, {'attr': {'class': 'ui loadable form', 'novalidate': 'novalidate', 'id': form.vars.id}}) }}
+                    <div class="row">
+                        {% if hookable_metadata.configuration.method is defined %}
+                            <input type="hidden" name="_method" value="{{ hookable_metadata.configuration.method }}" />
+                        {% endif %}
+                        {{ form_errors(form) }}
+                        {{ form_widget(form._token) }}
+
+                        <!-- Basic Information Section -->
+                        <div class="col-12 mb-4">
+                            <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem; padding-bottom: 10px; border-bottom: 2px solid #e9ecef;">📝 Basic Information</h3>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.translations.vars.id }}_0_name" style="display: block; margin-bottom: 5px; font-weight: 500; color: #2c3e50;">Product Name *</label>
+                                    {{ form_widget(form.translations[0].name, {'attr': {'style': 'width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;', 'placeholder': 'e.g., Classic Longboard 9-6'}}) }}
+                                    {{ form_errors(form.translations[0].name) }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.code.vars.id }}" style="display: block; margin-bottom: 5px; font-weight: 500; color: #2c3e50;">Product Code *</label>
+                                    {{ form_widget(form.code, {'attr': {'style': 'width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;', 'placeholder': 'e.g., LONGBOARD_001'}}) }}
+                                    {{ form_errors(form.code) }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.translations.vars.id }}_0_description" style="display: block; margin-bottom: 5px; font-weight: 500; color: #2c3e50;">Description</label>
+                                {{ form_widget(form.translations[0].description, {'attr': {'style': 'width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; resize: vertical;', 'rows': 3, 'placeholder': 'Describe your surf product...'}}) }}
+                                {{ form_errors(form.translations[0].description) }}
+                            </div>
+                        </div>
+
+                        <!-- Category & Status Section -->
+                        <div class="col-12 mb-4">
+                            <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem; padding-bottom: 10px; border-bottom: 2px solid #e9ecef;">🏷️ Category & Status</h3>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.mainTaxon.vars.id }}" style="display: block; margin-bottom: 5px; font-weight: 500; color: #2c3e50;">Category *</label>
+                                    {{ form_widget(form.mainTaxon, {'attr': {'style': 'width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;'}}) }}
+                                    {{ form_errors(form.mainTaxon) }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.enabled.vars.id }}" style="display: block; margin-bottom: 5px; font-weight: 500; color: #2c3e50;">Status</label>
+                                    {{ form_widget(form.enabled, {'attr': {'style': 'width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;'}}) }}
+                                    {{ form_errors(form.enabled) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Channels Section -->
+                        <div class="col-12 mb-4">
+                            <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem; padding-bottom: 10px; border-bottom: 2px solid #e9ecef;">🌐 Channels</h3>
+                            
+                            <div class="mb-3">
+                                <label style="display: block; margin-bottom: 10px; font-weight: 500; color: #2c3e50;">Available Channels</label>
+                                {{ form_widget(form.channels) }}
+                                {{ form_errors(form.channels) }}
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="col-12">
+                            <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+                                <a href="{{ path('sylius_admin_product_index') }}" 
+                                   style="padding: 12px 24px; background: #6c757d; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;"
+                                   onmouseover="this.style.backgroundColor='#5a6268'" 
+                                   onmouseout="this.style.backgroundColor='#6c757d'">
+                                    ← Cancel
+                                </a>
+                                <button type="submit" 
+                                        style="padding: 12px 24px; background: #0066cc; color: white; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;"
+                                        onmouseover="this.style.backgroundColor='#0056b3'" 
+                                        onmouseout="this.style.backgroundColor='#0066cc'">
+                                    {% if resource.id %}
+                                        💾 Update Product
+                                    {% else %}
+                                        ➕ Create Product
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form, {render_rest: hookable.configuration.render_rest|default(false)}) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input:focus, select:focus, textarea:focus {
+        border-color: #0066cc !important;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1) !important;
+        outline: none !important;
+    }
+    
+    .row {
+        margin: 0 -10px;
+    }
+    
+    .col-md-6, .col-12 {
+        padding: 0 10px;
+    }
+    
+    /* Hide complex form elements we don't need */
+    .form-group:has([id*="variant"]),
+    .form-group:has([id*="attribute"]),
+    .form-group:has([id*="option"]),
+    .form-group:has([id*="association"]),
+    .form-group:has([id*="image"]) {
+        display: none !important;
+    }
+</style>

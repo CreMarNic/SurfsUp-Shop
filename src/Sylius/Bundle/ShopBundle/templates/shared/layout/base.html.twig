@@ -20,10 +20,10 @@
         {% hook 'head' with { _prefixes: prefixes } %}
     </head>
 
-    <body data-route="{{ app.request.get('_route') }}">
+    <body data-route="{{ app.request.get('_route') }}" style="background-color: white !important; min-height: 100vh;">
         {% block body %}
             <div class="{% apply escape %}{% hook '#body_classes' with { _prefixes: prefixes } %}{% endapply %}">
-                <h1 class="visually-hidden text-black" aria-hidden="true">{{ sylius.channel.name }}</h1>
+                <h1 class="visually-hidden text-black" aria-hidden="true"></h1>
                 {% block header %}
                     {% hook 'header' with { _prefixes: prefixes } %}
                 {% endblock %}

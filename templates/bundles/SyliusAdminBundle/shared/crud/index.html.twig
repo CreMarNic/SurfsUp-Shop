@@ -1,0 +1,551 @@
+{% extends '@SyliusAdmin/shared/layout/base.html.twig' %}
+
+{% set prefixes = configuration.vars.hook_prefix is defined ? [configuration.vars.hook_prefix] %}
+{% set prefixes = prefixes|default({})|merge([
+    'sylius_admin.%resource_name%'|replace({'%resource_name%': resource_name|default(metadata.name)}),
+    'sylius_admin.common'
+]) %}
+
+{% set header = custom_header|default(metadata.applicationName ~ '.ui.' ~ metadata.pluralName) %}
+
+{% block title %}{{ header|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+    {% if metadata.name == 'product' %}
+        <!-- Custom Products Page -->
+        <div class="container-fluid" style="padding: 20px; background: #f8f9fa; min-height: 100vh;">
+            <!-- Simple Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h1 style="color: #2c3e50; margin: 0; font-size: 2rem; font-weight: 300;">
+                                    Surf Products
+                                </h1>
+                                <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 1.1rem;">
+                                    Manage your surf shop products
+                                </p>
+                            </div>
+                            <a href="{{ path('sylius_admin_product_create') }}" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;">
+                                <i class="fas fa-plus-circle"></i> Add New Product
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row">
+                <!-- Boards Category -->
+                <div class="col-12 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">Boards</h3>
+                        <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">🏄‍♂️</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Longboard 9-6</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Perfect for beginners</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">🏄‍♂️</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Performance Shortboard 6-0</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">High-performance board</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">🏄‍♂️</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Beginner Windboard 120L</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Stable windboard</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Men's Category -->
+                <div class="col-12 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">👨 Men's</h3>
+                        <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">👕</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Board Shorts</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Comfortable board shorts</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">👕</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Surf T-Shirt</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">100% Cotton t-shirt</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Women's Category -->
+                <div class="col-12 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">👩 Women's</h3>
+                        <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">👙</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Bikini Set</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Stylish bikini set</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">👕</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Surf Tank Top</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Comfortable tank top</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessories Category -->
+                <div class="col-12 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3rem;">🎽 Accessories</h3>
+                        <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">🧢</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">Classic Baseball Cap</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">SurfsUp logo cap</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s ease;"
+                                     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+                                     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">🤿</div>
+                                    <h4 style="color: #2c3e50; margin: 0 0 10px 0;">3mm Wetsuit</h4>
+                                    <p style="color: #6c757d; margin: 0 0 15px 0; font-size: 0.9rem;">Neoprene wetsuit</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center;">
+                                        <a href="#" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">Edit</a>
+                                        <a href="#" style="padding: 8px 16px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif metadata.name == 'order' %}
+        <!-- Custom Orders Page -->
+        <div class="container-fluid" style="padding: 20px; background: #f8f9fa; min-height: 100vh;">
+            <!-- Simple Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h1 style="color: #2c3e50; margin: 0; font-size: 2rem; font-weight: 300;">
+                            📦 Orders
+                        </h1>
+                        <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 1.1rem;">
+                            Manage your surf shop orders
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Stats -->
+            <div class="row mb-4" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">12</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Total Orders</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">8</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Pending</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">3</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Shipped</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">1</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Delivered</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="row">
+                <div class="col-12">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">Recent Orders</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Customer</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#000001</td>
+                                        <td>John Doe</td>
+                                        <td>2025-01-22</td>
+                                        <td>$599.99</td>
+                                        <td><span class="badge bg-warning">Pending</span></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info">View</a>
+                                            <a href="#" class="btn btn-sm btn-success">Process</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#000002</td>
+                                        <td>Jane Smith</td>
+                                        <td>2025-01-21</td>
+                                        <td>$299.99</td>
+                                        <td><span class="badge bg-primary">Shipped</span></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info">View</a>
+                                            <a href="#" class="btn btn-sm btn-secondary">Track</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#000003</td>
+                                        <td>Mike Johnson</td>
+                                        <td>2025-01-20</td>
+                                        <td>$199.99</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info">View</a>
+                                            <a href="#" class="btn btn-sm btn-outline-secondary">Invoice</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif metadata.name == 'customer' %}
+        <!-- Custom Customers Page -->
+        <div class="container-fluid" style="padding: 20px; background: #f8f9fa; min-height: 100vh;">
+            <!-- Simple Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h1 style="color: #2c3e50; margin: 0; font-size: 2rem; font-weight: 300;">
+                            👥 Customers
+                        </h1>
+                        <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 1.1rem;">
+                            Manage your surf shop customers
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Stats -->
+            <div class="row mb-4" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">45</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Total Customers</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">12</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">New This Month</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">38</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Active</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 25px; border-radius: 10px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 2rem;">7</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">VIP Members</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer List -->
+            <div class="row">
+                <div class="col-12">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">Customer List</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Orders</th>
+                                        <th>Total Spent</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>John Doe</td>
+                                        <td>john@example.com</td>
+                                        <td>+1 (555) 123-4567</td>
+                                        <td>3</td>
+                                        <td>$899.97</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info">View</a>
+                                            <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jane Smith</td>
+                                        <td>jane@example.com</td>
+                                        <td>+1 (555) 234-5678</td>
+                                        <td>5</td>
+                                        <td>$1,299.95</td>
+                                        <td><span class="badge bg-primary">VIP</span></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info">View</a>
+                                            <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mike Johnson</td>
+                                        <td>mike@example.com</td>
+                                        <td>+1 (555) 345-6789</td>
+                                        <td>1</td>
+                                        <td>$199.99</td>
+                                        <td><span class="badge bg-secondary">New</span></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info">View</a>
+                                            <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif metadata.name == 'channel' %}
+        <!-- Custom Settings Page -->
+        <div class="container-fluid" style="padding: 20px; background: #f8f9fa; min-height: 100vh;">
+            <!-- Simple Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h1 style="color: #2c3e50; margin: 0; font-size: 2rem; font-weight: 300;">
+                            ⚙️ Settings
+                        </h1>
+                        <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 1.1rem;">
+                            Configure your surf shop settings
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Cards -->
+            <div class="row" style="display: flex; flex-wrap: nowrap; gap: 15px;">
+                <!-- General Settings -->
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1rem;">🏪 General</h3>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.9rem;">Shop Name</label>
+                            <input type="text" class="form-control form-control-sm" value="SurfsUp Shop" readonly>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.9rem;">Currency</label>
+                            <select class="form-select form-select-sm">
+                                <option selected>USD ($)</option>
+                                <option>EUR (€)</option>
+                                <option>GBP (£)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.9rem;">Language</label>
+                            <select class="form-select form-select-sm">
+                                <option selected>English</option>
+                                <option>Spanish</option>
+                                <option>French</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-sm">Save</button>
+                    </div>
+                </div>
+
+                <!-- Payment Settings -->
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1rem;">💳 Payment</h3>
+                        <div class="mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="creditCard" checked>
+                                <label class="form-check-label" for="creditCard" style="font-size: 0.9rem;">
+                                    Credit Card
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="paypal">
+                                <label class="form-check-label" for="paypal" style="font-size: 0.9rem;">
+                                    PayPal
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="bankTransfer">
+                                <label class="form-check-label" for="bankTransfer" style="font-size: 0.9rem;">
+                                    Bank Transfer
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-sm">Update</button>
+                    </div>
+                </div>
+
+                <!-- Shipping Settings -->
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1rem;">🚚 Shipping</h3>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.9rem;">Standard</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" value="9.99">
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.9rem;">Express</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" value="19.99">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.9rem;">Free Threshold</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" value="99.00">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-sm">Update</button>
+                    </div>
+                </div>
+
+                <!-- Store Information -->
+                <div style="flex: 1; min-width: 0;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1rem;">🏄‍♂️ Store Info</h3>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.9rem;">Description</label>
+                            <textarea class="form-control form-control-sm" rows="2" placeholder="Store description...">Premium surf gear for all your ocean adventures.</textarea>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.9rem;">Email</label>
+                            <input type="email" class="form-control form-control-sm" value="info@surfsup.com">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.9rem;">Phone</label>
+                            <input type="tel" class="form-control form-control-sm" value="+1 (555) SURF-UP">
+                        </div>
+                        <button class="btn btn-primary btn-sm">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Default Sylius CRUD for other pages -->
+        {% hook 'index' with { _prefixes: prefixes, metadata, resources } %}
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if metadata.name != 'product' %}
+        {% hook 'index#stylesheets' with { _prefixes: prefixes } %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if metadata.name != 'product' %}
+        {% hook 'index#javascripts' with { _prefixes: prefixes } %}
+    {% endif %}
+{% endblock %}

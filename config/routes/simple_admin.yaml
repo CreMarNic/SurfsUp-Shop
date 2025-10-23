@@ -1,0 +1,20 @@
+# Simple Admin Routes for Surf Shop
+simple_admin_product_index:
+    path: /admin/simple/products
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
+    defaults:
+        template: '@SyliusAdmin/product/simple_index.html.twig'
+        _sylius:
+            section: admin
+            permission: true
+
+simple_admin_product_create:
+    path: /admin/simple/products/new
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
+    defaults:
+        template: '@SyliusAdmin/product/simple_form.html.twig'
+        _sylius:
+            section: admin
+            permission: true
+
+

@@ -1,0 +1,259 @@
+{# Quiksilver-Inspired Surfsup Shop Homepage #}
+{% extends 'shop/layout.html.twig' %}
+
+{% block title %}
+    Surfsup Shop - Premium Surf & Snow Gear
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(135deg, #0066cc 0%, #00aaff 100%); color: white; padding: 80px 0; text-align: center; position: relative; overflow: hidden;">
+    <div class="hero-background" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MDAiIHZpZXdCb3g9IjAgMCAxMjAwIDYwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjMDA2NmNjIi8+CjxwYXRoIGQ9Ik0wIDQwMEwxMjAwIDQwMEwxMjAwIDYwMEwwIDYwMFoiIGZpbGw9IiMwMGFhZmYiLz4KPGNpcmNsZSBjeD0iMzAwIiBjeT0iMzAwIiByPSI4MCIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPGNpcmNsZSBjeD0iOTAwIiBjeT0iMjAwIiByPSI2MCIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjIiLz4KPC9zdmc+') center/cover; opacity: 0.3;"></div>
+    
+    <div class="container" style="position: relative; z-index: 2;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                    <i class="fas fa-surfboard me-3"></i>
+                    ENGINEERED FOR WAVES
+                </h1>
+                <p class="lead mb-4" style="font-size: 1.3rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                    Premium surf gear, wetsuits, and snow equipment for the ultimate adventure lifestyle
+                </p>
+                <div class="hero-buttons">
+                    <a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'surfboards'}}) }}" 
+                       class="btn btn-light btn-lg me-3 mb-2" 
+                       style="background: rgba(255,255,255,0.9); color: #0066cc; font-weight: 600; padding: 15px 30px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease;">
+                        <i class="fas fa-surfboard me-2"></i>SHOP SURF GEAR
+                    </a>
+                    <a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'snow'}}) }}" 
+                       class="btn btn-outline-light btn-lg mb-2" 
+                       style="border: 2px solid white; color: white; font-weight: 600; padding: 15px 30px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease;">
+                        <i class="fas fa-snowflake me-2"></i>SHOP SNOW GEAR
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Promotional Banner -->
+<section class="promo-banner" style="background: #ff6600; color: white; padding: 20px 0; text-align: center;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4 class="mb-0 fw-bold">
+                    <i class="fas fa-fire me-2"></i>
+                    NEW MERCURY DROP - SHOP THE COLLECTION
+                </h4>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{{ path('sylius_shop_product_index') }}" 
+                   class="btn btn-light btn-sm" 
+                   style="background: white; color: #ff6600; font-weight: 600; padding: 8px 20px; border-radius: 6px; text-decoration: none;">
+                    SHOP NOW
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Categories -->
+<section class="categories-section" style="padding: 60px 0; background: rgba(255,255,255,0.95);">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold" style="color: #0066cc; margin-bottom: 20px;">
+                    SHOP BY CATEGORY
+                </h2>
+                <p class="lead" style="color: #666;">
+                    Everything you need for your next adventure
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Surf Category -->
+            <div class="col-lg-4 col-md-6">
+                <div class="category-card" style="background: linear-gradient(135deg, #0066cc, #00aaff); color: white; padding: 40px 30px; border-radius: 12px; text-align: center; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 8px 25px rgba(0,102,204,0.3);">
+                    <div class="category-icon mb-3" style="font-size: 3rem;">
+                        <i class="fas fa-surfboard"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">SURF</h4>
+                    <p class="mb-4">Boardshorts, wetsuits, and surf accessories for every wave</p>
+                    <a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'surf'}}) }}" 
+                       class="btn btn-light" 
+                       style="background: rgba(255,255,255,0.9); color: #0066cc; font-weight: 600; padding: 12px 25px; border-radius: 6px; text-decoration: none;">
+                        SHOP SURF
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Snow Category -->
+            <div class="col-lg-4 col-md-6">
+                <div class="category-card" style="background: linear-gradient(135deg, #333, #666); color: white; padding: 40px 30px; border-radius: 12px; text-align: center; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 8px 25px rgba(51,51,51,0.3);">
+                    <div class="category-icon mb-3" style="font-size: 3rem;">
+                        <i class="fas fa-snowflake"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">SNOW</h4>
+                    <p class="mb-4">Snow jackets, pants, and gear for the mountains</p>
+                    <a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'snow'}}) }}" 
+                       class="btn btn-light" 
+                       style="background: rgba(255,255,255,0.9); color: #333; font-weight: 600; padding: 12px 25px; border-radius: 6px; text-decoration: none;">
+                        SHOP SNOW
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Accessories Category -->
+            <div class="col-lg-4 col-md-6">
+                <div class="category-card" style="background: linear-gradient(135deg, #ff6600, #ff8833); color: white; padding: 40px 30px; border-radius: 12px; text-align: center; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 8px 25px rgba(255,102,0,0.3);">
+                    <div class="category-icon mb-3" style="font-size: 3rem;">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">CLOTHING</h4>
+                    <p class="mb-4">Tees, hoodies, and lifestyle apparel</p>
+                    <a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'clothing'}}) }}" 
+                       class="btn btn-light" 
+                       style="background: rgba(255,255,255,0.9); color: #ff6600; font-weight: 600; padding: 12px 25px; border-radius: 6px; text-decoration: none;">
+                        SHOP CLOTHING
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-section" style="padding: 60px 0; background: rgba(0,102,204,0.05);">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold" style="color: #0066cc; margin-bottom: 20px;">
+                    SEASONAL STAPLES
+                </h2>
+                <p class="lead" style="color: #666;">
+                    SHOP FALL FAVORITES
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                    <div class="product-image" style="height: 250px; background: linear-gradient(135deg, #0066cc, #00aaff); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        <i class="fas fa-surfboard"></i>
+                    </div>
+                    <div class="product-info" style="padding: 20px;">
+                        <h5 class="fw-bold mb-2">Premium Surfboards</h5>
+                        <p class="text-muted mb-3">High-performance boards for every skill level</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">From $299</span>
+                            <a href="#" class="btn btn-primary btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                    <div class="product-image" style="height: 250px; background: linear-gradient(135deg, #333, #666); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        <i class="fas fa-snowflake"></i>
+                    </div>
+                    <div class="product-info" style="padding: 20px;">
+                        <h5 class="fw-bold mb-2">Snow Jackets</h5>
+                        <p class="text-muted mb-3">Warm and waterproof for the slopes</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">From $199</span>
+                            <a href="#" class="btn btn-primary btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                    <div class="product-image" style="height: 250px; background: linear-gradient(135deg, #ff6600, #ff8833); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div class="product-info" style="padding: 20px;">
+                        <h5 class="fw-bold mb-2">Lifestyle Tees</h5>
+                        <p class="text-muted mb-3">Comfortable and stylish everyday wear</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">From $29</span>
+                            <a href="#" class="btn btn-primary btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                    <div class="product-image" style="height: 250px; background: linear-gradient(135deg, #28a745, #20c997); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        <i class="fas fa-water"></i>
+                    </div>
+                    <div class="product-info" style="padding: 20px;">
+                        <h5 class="fw-bold mb-2">Wetsuits</h5>
+                        <p class="text-muted mb-3">Stay warm in any water temperature</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">From $149</span>
+                            <a href="#" class="btn btn-primary btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section" style="background: #0066cc; color: white; padding: 60px 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h3 class="fw-bold mb-3">
+                    <i class="fas fa-envelope me-2"></i>
+                    Sign up for email & texts and score 20% off your first order!
+                </h3>
+                <p class="mb-4">Get the latest surf gear updates and exclusive offers!</p>
+                <form class="newsletter-form" style="max-width: 400px; margin: 0 auto;">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Your email address" style="border-radius: 8px 0 0 8px; border: none; padding: 15px;">
+                        <button class="btn btn-warning" type="submit" style="border-radius: 0 8px 8px 0; padding: 15px 25px; font-weight: 600;">
+                            SIGN UP
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom JavaScript for animations -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to category cards
+    const categoryCards = document.querySelectorAll('.category-card');
+    categoryCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Add hover effects to product cards
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+
+{% endblock %}

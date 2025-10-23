@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact Us - SurfsUp Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fef9e7;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #007bff;
+        }
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/surfsup/surf-3.jpg') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+        }
+        .content-section {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .content-section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .content-section h3 {
+            color: #34495e;
+            font-size: 1.4rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .content-section p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .contact-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .contact-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.1);
+        }
+        .contact-card h4 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        .contact-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .contact-card p {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        .contact-form {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .highlight-box {
+            background: #e8f4fd;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="/index.html" class="logo">SurfsUp Shop</a>
+            <nav class="nav-links">
+                <a href="/index.html">Home</a>
+                <a href="/shipping.html">Shipping</a>
+                <a href="/returns.html">Returns</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>📞 Contact Us</h1>
+            <p>Got questions about surf gear? Need help choosing the right board? Our surf experts are here to help you catch the perfect wave!</p>
+        </div>
+
+        <div class="content-section">
+            <h2>🏄‍♂️ Get in Touch</h2>
+            <p>Whether you're a beginner looking for your first board or a pro seeking the latest gear, our team of surf enthusiasts is ready to help you find exactly what you need.</p>
+            
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="icon">📧</div>
+                    <h4>Email Support</h4>
+                    <p><strong>General Inquiries:</strong> info@surfsup.com</p>
+                    <p><strong>Orders & Shipping:</strong> orders@surfsup.com</p>
+                    <p><strong>Returns:</strong> returns@surfsup.com</p>
+                    <p><em>Response within 24 hours</em></p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="icon">📱</div>
+                    <h4>Phone Support</h4>
+                    <p><strong>Main Line:</strong> (555) SURF-UP</p>
+                    <p><strong>Toll-Free:</strong> 1-800-SURF-UP</p>
+                    <p><strong>Hours:</strong> Mon-Fri 9AM-6PM PST</p>
+                    <p><strong>Weekends:</strong> Sat 10AM-4PM PST</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="icon">🏪</div>
+                    <h4>Visit Our Shop</h4>
+                    <p><strong>Address:</strong> 123 Ocean Drive</p>
+                    <p>Malibu, CA 90265</p>
+                    <p><strong>Hours:</strong> Daily 9AM-7PM</p>
+                    <p><em>Come try before you buy!</em></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>💬 Send Us a Message</h2>
+            <p>Have a specific question? Fill out the form below and we'll get back to you as soon as possible.</p>
+            
+            <div class="contact-form">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a topic</option>
+                            <option value="general">General Question</option>
+                            <option value="order">Order Status</option>
+                            <option value="shipping">Shipping Inquiry</option>
+                            <option value="return">Return/Exchange</option>
+                            <option value="product">Product Question</option>
+                            <option value="technical">Technical Support</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" placeholder="Tell us how we can help you..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>🕒 Business Hours</h2>
+            <div class="highlight-box">
+                <p><strong>Customer Service:</strong> Monday - Friday, 9:00 AM - 6:00 PM PST</p>
+                <p><strong>Weekend Support:</strong> Saturday, 10:00 AM - 4:00 PM PST</p>
+                <p><strong>Store Hours:</strong> Daily, 9:00 AM - 7:00 PM PST</p>
+                <p><strong>Holiday Schedule:</strong> Closed on Thanksgiving, Christmas Day, and New Year's Day</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>❓ Frequently Asked Questions</h2>
+            <h3>What's the best surfboard for beginners?</h3>
+            <p>For beginners, we recommend starting with a longboard (9'0" or longer) as they provide more stability and are easier to paddle. Our Classic Longboard 9'6" is perfect for learning!</p>
+            
+            <h3>How do I choose the right wetsuit thickness?</h3>
+            <p>Wetsuit thickness depends on water temperature: 3mm for warm water (70°F+), 5mm for moderate water (60-70°F), and 7mm for cold water (below 60°F).</p>
+            
+            <h3>Do you offer surf lessons?</h3>
+            <p>Yes! We partner with local surf schools and can connect you with certified instructors. Contact us for recommendations in your area.</p>
+            
+            <h3>Can I return a surfboard if it doesn't work out?</h3>
+            <p>Absolutely! We offer a 30-day return policy on all surfboards in original condition. See our Returns page for full details.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 SurfsUp Shop. All rights reserved.</p>
+    </div>
+</body>
+</html>
+

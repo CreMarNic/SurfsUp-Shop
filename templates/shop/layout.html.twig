@@ -1,0 +1,396 @@
+{# Surfsup Shop Layout Template #}
+<!DOCTYPE html>
+<html lang="{{ sylius.localeCode|default('en') }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ 'sylius.ui.surfsup_shop'|trans }}{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('build/app/shop/images/surfsup-favicon.ico', 'app.shop') }}">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('build/app/shop/shop.css', 'app.shop') }}">
+    {% endblock %}
+    
+    <!-- Custom Surfsup Styles -->
+    <style>
+        :root {
+            --surfsup-primary: #0066cc;
+            --surfsup-secondary: #00aaff;
+            --surfsup-accent: #ff6600;
+            --surfsup-light-blue: #e6f3ff;
+            --surfsup-dark-blue: #004499;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI4MDAiIHZpZXdCb3g9IjAgMCAxMjAwIDgwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iODAwIiBmaWxsPSIjMDA3N2ZmIi8+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzAwYjdmZiIvPgo8Y2lyY2xlIGN4PSIzMDAiIGN5PSIzMDAiIHI9IjEwMCIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPGNpcmNsZSBjeD0iOTAwIiBjeT0iMjAwIiByPSI4MCIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjIiLz4KPGNpcmNsZSBjeD0iNjAwIiBjeT0iNTAwIiByPSI2MCIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjE1Ii8+CjxjaXJjbGUgY3g9IjEwMDAiIGN5PSI2MDAiIHI9IjQwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMjUiLz4KPC9zdmc+');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: -1;
+        }
+        
+        .surfsup-header {
+            background: rgba(0, 102, 204, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin: 10px;
+        }
+        
+        .surfsup-navbar {
+            background: transparent !important;
+        }
+        
+        .surfsup-navbar .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white !important;
+        }
+        
+        .surfsup-navbar .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .surfsup-navbar .nav-link:hover {
+            color: var(--surfsup-secondary) !important;
+        }
+        
+        .surfsup-footer {
+            background: var(--surfsup-dark-blue);
+            color: white;
+            padding: 50px 0 30px;
+        }
+        
+        .surf-wave {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .surf-wave::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, 
+                var(--surfsup-primary) 0%, 
+                var(--surfsup-secondary) 25%, 
+                var(--surfsup-primary) 50%, 
+                var(--surfsup-secondary) 75%, 
+                var(--surfsup-primary) 100%);
+            background-size: 200% 100%;
+            animation: wave 3s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Glass-morphism effects for content readability */
+        .container, .container-fluid {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn {
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+        }
+        
+        .bg-white {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .row {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            margin: 10px 0;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="surfsup-body" style="min-height: 100vh;">
+    <!-- Quiksilver-Inspired Header -->
+    <div class="top-banner" style="background: #ff6600; color: white; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 600;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span><i class="fas fa-shipping-fast me-2"></i>Free Shipping On Orders $125+</span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span><i class="fas fa-percent me-2"></i>Sign up for email & texts and score 20% off your first order!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="surfsup-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg surfsup-navbar">
+                <div class="container-fluid">
+                    <!-- Logo -->
+                    <a class="navbar-brand" href="{{ path('sylius_shop_homepage') }}" style="font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px;">
+                        <span style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">SURFSUP</span>
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Navigation Menu -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="font-weight: 600; text-transform: uppercase;">
+                                    Mens
+                                </a>
+                                <ul class="dropdown-menu" style="background: white; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-radius: 8px;">
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'boardshorts'}}) }}">Boardshorts</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'tees'}}) }}">Tees</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'shirts'}}) }}">Shirts & Polos</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'jackets'}}) }}">Jackets</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="font-weight: 600; text-transform: uppercase;">
+                                    Surf
+                                </a>
+                                <ul class="dropdown-menu" style="background: white; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-radius: 8px;">
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'boardshorts'}}) }}">Boardshorts</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'wetsuits'}}) }}">Wetsuits</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'rashguards'}}) }}">Rashguards</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="font-weight: 600; text-transform: uppercase;">
+                                    Snow
+                                </a>
+                                <ul class="dropdown-menu" style="background: white; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-radius: 8px;">
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'snow-jackets'}}) }}">Snow Jackets</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'snow-pants'}}) }}">Snow Pants</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'snow-accessories'}}) }}">Snow Accessories</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('sylius_shop_product_index') }}" style="font-weight: 600; text-transform: uppercase;">
+                                    Sale
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Search Bar -->
+                        <form class="d-flex me-3" action="{{ path('sylius_shop_product_index') }}" method="get">
+                            <input class="form-control me-2" 
+                                   type="search" 
+                                   name="criteria[search]"
+                                   placeholder="Search surf gear..." 
+                                   aria-label="Search">
+                            <button class="btn btn-outline-light" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                        
+                        <!-- User Menu -->
+                        <ul class="navbar-nav">
+                            {% if sylius.customer %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user"></i> {{ sylius.customer.firstName }}
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ path('sylius_shop_account_dashboard') }}">My Account</a></li>
+                                        <li><a class="dropdown-item" href="{{ path('sylius_shop_account_profile_update') }}">Profile</a></li>
+                                        <li><a class="dropdown-item" href="{{ path('sylius_shop_account_order_index') }}">Orders</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ path('sylius_shop_logout') }}">Logout</a></li>
+                                    </ul>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('sylius_shop_login') }}">
+                                        <i class="fas fa-sign-in-alt"></i> Login
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            <!-- Cart -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('sylius_shop_cart_summary') }}">
+                                    <i class="fas fa-shopping-cart"></i> 
+                                    Cart 
+                                    <span class="badge bg-warning text-dark cart-count">
+                                        {{ sylius.cart.items|length }}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="surf-wave">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="surfsup-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-section">
+                        <h5><i class="fas fa-surfboard"></i> Surfsup Shop</h5>
+                        <p>Your premier destination for surf gear and equipment. Ride the wave with the best surf products.</p>
+                        <div class="social-links">
+                            <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <div class="footer-section">
+                        <h5>Shop</h5>
+                        <ul>
+                            <li><a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'surfboards'}}) }}">Surfboards</a></li>
+                            <li><a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'wetsuits'}}) }}">Wetsuits</a></li>
+                            <li><a href="{{ path('sylius_shop_product_index', {'criteria': {'taxon': 'accessories'}}) }}">Accessories</a></li>
+                            <li><a href="{{ path('sylius_shop_product_index') }}">All Products</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <div class="footer-section">
+                        <h5>Support</h5>
+                        <ul>
+                            <li><a href="{{ path('sylius_shop_contact_request') }}">Contact Us</a></li>
+                            <li><a href="#">Size Guide</a></li>
+                            <li><a href="#">Shipping Info</a></li>
+                            <li><a href="#">Returns</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="footer-section">
+                        <h5>Newsletter</h5>
+                        <p>Get the latest surf gear updates and exclusive offers!</p>
+                        <form class="newsletter-form">
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Your email address">
+                                <button class="btn btn-primary" type="submit">Subscribe</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>&copy; {{ 'now'|date('Y') }} Surfsup Shop. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p>Made with <i class="fas fa-heart text-danger"></i> for surfers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    {% block javascripts %}
+        <script src="{{ asset('build/app/shop/shop.js', 'app.shop') }}"></script>
+    {% endblock %}
+    
+    <!-- Custom Surfsup Scripts -->
+    <script>
+        // Surfsup Shop JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize surf shop functionality
+            console.log('🏄‍♂️ Surfsup Shop loaded successfully!');
+            
+            // Add surf wave animation to page load
+            document.body.classList.add('surf-wave-loaded');
+            
+            // Initialize cart animations
+            initializeCartAnimations();
+            
+            // Initialize search functionality
+            initializeSurfSearch();
+        });
+        
+        function initializeCartAnimations() {
+            // Add surf wave animation to cart interactions
+            const cartLinks = document.querySelectorAll('a[href*="cart"]');
+            cartLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    this.classList.add('surf-wave-animation');
+                    setTimeout(() => {
+                        this.classList.remove('surf-wave-animation');
+                    }, 1000);
+                });
+            });
+        }
+        
+        function initializeSurfSearch() {
+            // Enhanced search with surf-specific suggestions
+            const searchInput = document.querySelector('input[name="criteria[search]"]');
+            if (searchInput) {
+                searchInput.addEventListener('focus', function() {
+                    this.placeholder = 'Search surfboards, wetsuits, fins...';
+                });
+            }
+        }
+    </script>
+</body>
+</html>

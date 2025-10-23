@@ -1,66 +1,75 @@
-###> project files ###
-/behat.yml
-/composer.lock
-/docker-compose.override.yml
-/public/media
-!/public/media/image/.gitkeep
-###< project files ###
+# Sylius .gitignore
 
-###> build ###
-/etc/build/*
-!/etc/build/.gitignore
-###< build ###
-
-###> drivers ###
-/drivers/
-###< drivers ###
-
-###> configuration ###
-/.php-version
-/php.ini
-###< configuration ###
-
-###> dependencies ###
-/node_modules/
-/public/bundles/
+# Dependencies
 /vendor/
-/var/
-###< dependencies ###
+/node_modules/
 
-###> sylius/sylius ###
-/config/encryption/dev.key
-###< sylius/sylius ###
-
-###> symfony/framework-bundle ###
-.env.*.local
+# Environment files
+.env
 .env.local
-.env.local.php
-###< symfony/framework-bundle ###
+.env.*.local
 
-###> symfony/webpack-encore-bundle ###
+# Cache and logs
+/var/cache/
+/var/log/
+/var/sessions/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build files
+/public/bundles/
 /public/build/
-npm-debug.log
-pnpm-lock.yaml
-yarn-error.log
-yarn.lock
-package-lock.json
-###< symfony/webpack-encore-bundle ###
+/public/media/
+/public/media/cache/
 
-###> friendsofphp/php-cs-fixer ###
+# Temporary files
+/tmp/
+/temp/
+
+# Composer
+composer.phar
+composer.lock
+
+# NPM
+package-lock.json
+yarn.lock
+
+# PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+
+# Behat
+/behat.yml
+/behat.yml.dist
+
+# PHP CS Fixer
 /.php_cs
 /.php_cs.cache
-###< friendsofphp/php-cs-fixer ###
 
-###> phpstan/phpstan ###
+# PHPStan
 /phpstan.neon
-###< phpstan/phpstan ###
+/phpstan.neon.dist
 
-###> phpunit/phpunit ###
-/phpunit.xml
-/.phpunit.result.cache
-###< phpunit/phpunit ###
+# ECS
+/.ecs.php
 
-###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
-!/config/jwt/*-test.pem
-###< lexik/jwt-authentication-bundle ###
+# Local configuration
+/config/packages/local.yaml
+/config/packages/test/local.yaml
+
+# XAMPP specific
+/xampp/

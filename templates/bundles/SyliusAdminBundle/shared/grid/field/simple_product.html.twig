@@ -1,0 +1,66 @@
+{# Simplified Product Grid Field #}
+<div style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: white; transition: all 0.3s ease;"
+     onmouseover="this.style.borderColor='#0066cc'; this.style.boxShadow='0 4px 15px rgba(0,102,204,0.1)'"
+     onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+    
+    <!-- Product Icon -->
+    <div style="font-size: 2.5rem; min-width: 60px; text-align: center;">
+        {% if data.mainTaxon and data.mainTaxon.code in ['longboards', 'shortboards', 'windboards'] %}
+            🏄‍♂️
+        {% elseif data.mainTaxon and data.mainTaxon.code in ['mens_shorts', 'mens_shirts'] %}
+            👕
+        {% elseif data.mainTaxon and data.mainTaxon.code in ['womens_bathing_suits', 'womens_shirts'] %}
+            👙
+        {% elseif data.mainTaxon and data.mainTaxon.code == 'caps' %}
+            🧢
+        {% elseif data.mainTaxon and data.mainTaxon.code == 'wetsuits' %}
+            🤿
+        {% else %}
+            🏄‍♂️
+        {% endif %}
+    </div>
+    
+    <!-- Product Info -->
+    <div style="flex: 1;">
+        <h4 style="color: #2c3e50; margin: 0 0 5px 0; font-size: 1.1rem; font-weight: 600;">
+            {{ data.name|default('Unnamed Product') }}
+        </h4>
+        <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">
+            Code: <strong>{{ data.code|default('N/A') }}</strong>
+        </p>
+        <p style="color: #6c757d; margin: 0; font-size: 0.85rem;">
+            Category: {{ data.mainTaxon.name|default('Uncategorized') }}
+        </p>
+    </div>
+    
+    <!-- Status Badge -->
+    <div style="min-width: 80px; text-align: center;">
+        {% if data.enabled %}
+            <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 500;">
+                ✅ Active
+            </span>
+        {% else %}
+            <span style="background: #dc3545; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 500;">
+                ❌ Inactive
+            </span>
+        {% endif %}
+    </div>
+    
+    <!-- Actions -->
+    <div style="display: flex; gap: 8px; min-width: 120px;">
+        <a href="{{ path('sylius_admin_product_update', {'id': data.id}) }}" 
+           style="padding: 6px 12px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;"
+           onmouseover="this.style.backgroundColor='#218838'" 
+           onmouseout="this.style.backgroundColor='#28a745'">
+            Edit
+        </a>
+        <a href="{{ path('sylius_admin_product_show', {'id': data.id}) }}" 
+           style="padding: 6px 12px; background: #17a2b8; color: white; text-decoration: none; border-radius: 6px; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;"
+           onmouseover="this.style.backgroundColor='#138496'" 
+           onmouseout="this.style.backgroundColor='#17a2b8'">
+            View
+        </a>
+    </div>
+</div>
+
+

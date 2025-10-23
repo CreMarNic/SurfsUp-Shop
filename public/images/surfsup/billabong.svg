@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="80" height="24">
+  <defs>
+    <style>
+      .billabong-text { font-family: 'Arial Black', Arial, sans-serif; font-weight: 900; font-size: 20px; fill: #000000; letter-spacing: 1px; }
+    </style>
+  </defs>
+  <rect width="200" height="60" fill="#ffffff"/>
+  <text x="10" y="35" class="billabong-text">BILLABONG</text>
+</svg>
