@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libsqlite3-dev \
+    sqlite3 \
     zip \
     unzip \
     git \
