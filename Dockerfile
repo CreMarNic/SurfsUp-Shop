@@ -4,11 +4,17 @@ FROM php:8.2-apache
 # Install required PHP extensions and tools
 RUN apt-get update && apt-get install -y \
     libzip-dev \
+    libicu-dev \
+    libxml2-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
     zip \
     unzip \
     git \
     curl \
-    && docker-php-ext-install zip pdo pdo_sqlite \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install zip pdo pdo_sqlite intl xml gd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,11 +28,11 @@ WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy composer files first for better caching
-COPY composer.json composer.lock ./
+COPY composer.json ./
 
 # Install dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 
 # Copy application files
 COPY . .
