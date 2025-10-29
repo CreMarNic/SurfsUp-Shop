@@ -45,3 +45,4 @@ DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db
 ## Custom Domain
 
 After deployment, you can add a custom domain in your hosting platform's settings.
+

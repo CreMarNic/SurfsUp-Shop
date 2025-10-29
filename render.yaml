@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: surfsup-shop
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    region: oregon
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///var/www/html/var/data.db
+      - key: SYMFONY_ENV
+        value: prod
+      - key: COMPOSER_ALLOW_SUPERUSER
+        value: "1"
+    healthCheckPath: /
+    autoDeploy: true

@@ -44,3 +44,4 @@ COMPOSER_IGNORE_PLATFORM_REQS=1
 1. Run: `php bin/console cache:clear`
 2. Create admin user: `php bin/console sylius:user:create`
 3. Access admin: `/admin`
+

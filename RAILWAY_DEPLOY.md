@@ -30,3 +30,4 @@ php -S 0.0.0.0:$PORT -t public/
 2. Ensure composer.json is valid
 3. Try using PHP 8.2 specifically
 4. Check build logs for specific errors
+
