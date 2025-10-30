@@ -3,8 +3,15 @@ $lines = @"
 !.dockerignore
 !Dockerfile
 !render.yaml
-!sylius
-!sylius/**
+!composer.json
+!composer.lock
+!public/**
+!src/**
+!config/**
+!templates/**
+!assets/**
+!bin/**
+!translations/**
+!.env
 "@
 $lines | Set-Content -NoNewline .dockerignore
-Get-Content .dockerignore -Raw
