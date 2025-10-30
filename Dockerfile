@@ -31,22 +31,15 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
+RUN composer dump-autoload -o
 
 # Copy composer file for layer caching
 COPY composer.json ./
 
-# Allow Composer plugins (Flex) and install deps with scripts enabled
+# Install dependencies without scripts
 ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV COMPOSER_NO_INTERACTION=1
-RUN composer global config allow-plugins.symfony/flex true \
- && composer global config allow-plugins.php-http/discovery true \
- && composer global config allow-plugins.symfony/runtime true || true
-RUN composer install --no-dev --optimize-autoloader --prefer-dist --ignore-platform-reqs
-
-# Install dependencies
-ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 
 # Copy the rest of the app
 COPY . .
