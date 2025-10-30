@@ -1,4 +1,3 @@
-$lines = @"
 *
 !.dockerignore
 !Dockerfile
@@ -13,5 +12,3 @@ $lines = @"
 !bin/**
 !translations/**
 !.env
-"@
-$lines | Set-Content -NoNewline .dockerignore

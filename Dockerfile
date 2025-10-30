@@ -34,7 +34,7 @@ WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy composer files first for caching
-COPY sylius/composer.json ./
+
 
 # Install dependencies (ignore platform to avoid build image mismatches)
 ENV COMPOSER_ALLOW_SUPERUSER=1
