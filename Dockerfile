@@ -33,15 +33,14 @@ WORKDIR /var/www/html
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy composer files first for caching
+# Copy composer file for layer caching
+COPY composer.json ./
 
-
-# Install dependencies (ignore platform to avoid build image mismatches)
+# Install dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 
-# Copy application files
-COPY composer.json ./
+# Copy the rest of the app
 COPY . .
 
 # Create necessary directories and set permissions
