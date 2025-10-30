@@ -2,7 +2,7 @@ services:
   - type: web
     name: surfsup-shop
     env: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: Dockerfile
     dockerContext: .
     plan: starter
     region: oregon
@@ -19,3 +19,5 @@ services:
         value: "1"
     healthCheckPath: /
     autoDeploy: true
+
+
