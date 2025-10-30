@@ -1,6 +1,10 @@
+$lines = @"
 *
 !.dockerignore
 !Dockerfile
 !render.yaml
 !sylius
 !sylius/**
+"@
+$lines | Set-Content -NoNewline .dockerignore
+Get-Content .dockerignore -Raw
