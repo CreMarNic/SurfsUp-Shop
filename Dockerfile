@@ -30,14 +30,13 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Install Composer
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
-RUN composer dump-autoload -o
+# Install Composer (must be BEFORE any 'composer' commands)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy composer file for layer caching
+# Copy composer file for caching
 COPY composer.json ./
 
-# Install dependencies without scripts
+# Install deps (no scripts, to avoid symfony-cmd)
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 
