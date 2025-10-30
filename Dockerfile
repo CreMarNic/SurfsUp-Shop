@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libsqlite3-dev \
     sqlite3 \
+    libonig-dev \
     pkg-config \
     zip \
     unzip \
@@ -23,7 +24,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install -j$(nproc) zip pdo pdo_sqlite intl xml gd mbstring opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
