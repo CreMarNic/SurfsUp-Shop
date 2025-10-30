@@ -41,7 +41,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 
 # Copy application files
-COPY sylius/ .
+COPY composer.json ./
+COPY . .
 
 # Create necessary directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions \
