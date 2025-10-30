@@ -1,8 +1,6 @@
-$lines = @"
 *
 !.dockerignore
 !Dockerfile
 !render.yaml
 !sylius
 !sylius/**
-"
