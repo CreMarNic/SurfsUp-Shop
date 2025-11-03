@@ -38,10 +38,14 @@ COPY composer.json ./
 
 # Install deps (no scripts, to avoid symfony-cmd)
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs \
+    && ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after install" && exit 1)
 
-# Copy the rest of the app
+# Copy the rest of the app (vendor will persist since it's not in source)
 COPY . .
+
+# Verify vendor still exists after copy
+RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
 # Create necessary directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions \
