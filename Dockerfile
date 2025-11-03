@@ -76,7 +76,9 @@ COPY . .
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
 # Create necessary directories and set permissions
-RUN mkdir -p var/cache var/log var/sessions \
+# Clear any stale cache from source - this is critical for production
+RUN rm -rf var/cache var/log var/sessions || true
+RUN mkdir -p var/cache/prod var/log var/sessions \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 var/
