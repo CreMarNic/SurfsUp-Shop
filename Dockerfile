@@ -46,6 +46,7 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interactio
 RUN cat > vendor/autoload_runtime.php << 'EOF'
 <?php
 
+// Ensure autoloader is loaded before anything else
 require_once __DIR__."/autoload.php";
 
 return function (array $context = []) {
@@ -55,10 +56,17 @@ return function (array $context = []) {
     $_SERVER["APP_ENV"] = $_ENV["APP_ENV"] = $context["APP_ENV"];
     $_SERVER["APP_DEBUG"] = $_SERVER["APP_DEBUG"] ?? $_ENV["APP_DEBUG"] ?? "prod" !== $context["APP_ENV"];
     $_SERVER["APP_DEBUG"] = $_ENV["APP_DEBUG"] = (int) $_SERVER["APP_DEBUG"] || ("prod" !== $context["APP_ENV"]);
+    
     // Load index.php.original (the original Kernel factory) instead of index.php (our bootstrap)
     $indexFile = file_exists(__DIR__."/../public/index.php.original") 
         ? __DIR__."/../public/index.php.original" 
         : __DIR__."/../public/index.php";
+    
+    // Ensure autoloader is available when loading index file
+    if (!class_exists('App\Kernel', false)) {
+        require_once __DIR__."/autoload.php";
+    }
+    
     $runtime = require $indexFile;
     return $runtime($context);
 };
@@ -95,18 +103,34 @@ RUN echo 'RewriteEngine On' > /var/www/html/public/.htaccess \
     && echo 'RewriteRule ^(.*)$ index.php [QSA,L]' >> /var/www/html/public/.htaccess
 
 # Fix index.php to auto-execute when called via web (Symfony Runtime bootstrap)
-# The runtime function loads index.php internally, so we need to preserve the original
-# and create a bootstrap that calls the runtime properly
-RUN cp /var/www/html/public/index.php /var/www/html/public/index.php.original && \
-    cat > /var/www/html/public/index.php << 'EOF'
+# Create index.php.original with just the Kernel factory (no autoload_runtime.php require)
+# since autoloader is already loaded by autoload_runtime.php
+RUN cat > /var/www/html/public/index.php.original << 'ORIGEOF'
+<?php
+
+declare(strict_types=1);
+
+use App\Kernel;
+
+// Autoloader is already loaded by autoload_runtime.php
+
+return static function (array $context) {
+    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+};
+ORIGEOF
+
+# Create the bootstrap index.php
+RUN cat > /var/www/html/public/index.php << 'EOF'
 <?php
 
 declare(strict_types=1);
 
 use Symfony\Component\HttpFoundation\Request;
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+// Load autoloader first
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
+// Load the runtime function
 $runtime = require dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 $appEnv = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'prod';
