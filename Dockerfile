@@ -62,11 +62,6 @@ return function (array $context = []) {
         ? __DIR__."/../public/index.php.original" 
         : __DIR__."/../public/index.php";
     
-    // Ensure autoloader is available when loading index file
-    if (!class_exists('App\Kernel', false)) {
-        require_once __DIR__."/autoload.php";
-    }
-    
     $runtime = require $indexFile;
     return $runtime($context);
 };
@@ -105,6 +100,7 @@ RUN echo 'RewriteEngine On' > /var/www/html/public/.htaccess \
 # Fix index.php to auto-execute when called via web (Symfony Runtime bootstrap)
 # Create index.php.original with just the Kernel factory (no autoload_runtime.php require)
 # since autoloader is already loaded by autoload_runtime.php
+# Note: Kernel.php must be explicitly required since it's only in autoload-dev
 RUN cat > /var/www/html/public/index.php.original << 'ORIGEOF'
 <?php
 
@@ -113,6 +109,8 @@ declare(strict_types=1);
 use App\Kernel;
 
 // Autoloader is already loaded by autoload_runtime.php
+// Explicitly require Kernel since it's only in autoload-dev and we're using --no-dev
+require_once dirname(__DIR__).'/src/Kernel.php';
 
 return static function (array $context) {
     return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
