@@ -125,6 +125,11 @@ declare(strict_types=1);
 
 use Symfony\Component\HttpFoundation\Request;
 
+// Enable error reporting temporarily to see what's wrong
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 // Load autoloader first
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
@@ -134,17 +139,27 @@ $runtime = require dirname(__DIR__).'/vendor/autoload_runtime.php';
 $appEnv = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'prod';
 $appDebug = (bool) ($_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? '0');
 
-// The runtime function loads index.php.original and returns the Kernel
-$kernel = $runtime([
-    'APP_ENV' => $appEnv,
-    'APP_DEBUG' => $appDebug,
-]);
+try {
+    // The runtime function loads index.php.original and returns the Kernel
+    $kernel = $runtime([
+        'APP_ENV' => $appEnv,
+        'APP_DEBUG' => $appDebug,
+    ]);
 
-// Handle the request
-$request = Request::createFromGlobals();
-$response = $kernel->handle($request);
-$response->send();
-$kernel->terminate($request, $response);
+    // Handle the request
+    $request = Request::createFromGlobals();
+    $response = $kernel->handle($request);
+    $response->send();
+    $kernel->terminate($request, $response);
+} catch (\Throwable $e) {
+    // Display error details
+    http_response_code(500);
+    echo '<h1>Error</h1>';
+    echo '<p><strong>Message:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
+    echo '<p><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
+    echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+    throw $e;
+}
 EOF
 
 EXPOSE 80
