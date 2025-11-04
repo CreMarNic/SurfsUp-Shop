@@ -121,16 +121,19 @@ framework:
                 adapter: cache.adapter.filesystem
 DOCTRINEEOF
 
-# Configure Apache for Sylius
+# Configure Apache for Sylius - use simpler approach
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+
+# Update Apache configuration
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
+
+# Ensure public directory is accessible (use actual path, not env var in RUN)
 RUN echo '<Directory /var/www/html/public>' >> /etc/apache2/apache2.conf \
+    && echo '    Options Indexes FollowSymLinks' >> /etc/apache2/apache2.conf \
     && echo '    AllowOverride All' >> /etc/apache2/apache2.conf \
     && echo '    Require all granted' >> /etc/apache2/apache2.conf \
     && echo '</Directory>' >> /etc/apache2/apache2.conf
-
-# Set document root
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
-    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Ensure .htaccess routing
 RUN echo 'RewriteEngine On' > /var/www/html/public/.htaccess \
@@ -221,12 +224,16 @@ try {
 }
 EOF
 
-# Add startup verification
+# Add startup script with better error handling
 RUN echo '#!/bin/bash' > /start-apache.sh && \
     echo 'set -e' >> /start-apache.sh && \
+    echo 'echo "=== Apache Startup Script ==="' >> /start-apache.sh && \
+    echo 'echo "Checking Apache configuration..."' >> /start-apache.sh && \
+    echo 'apachectl -t 2>&1 || (echo "Apache config test failed!" && cat /etc/apache2/apache2.conf && exit 1)' >> /start-apache.sh && \
+    echo 'echo "Apache config OK"' >> /start-apache.sh && \
+    echo 'echo "Checking document root: ${APACHE_DOCUMENT_ROOT}"' >> /start-apache.sh && \
+    echo 'ls -la ${APACHE_DOCUMENT_ROOT} || echo "WARNING: Document root not found"' >> /start-apache.sh && \
     echo 'echo "Starting Apache..."' >> /start-apache.sh && \
-    echo 'apachectl configtest || exit 1' >> /start-apache.sh && \
-    echo 'echo "Apache config OK, starting server..."' >> /start-apache.sh && \
     echo 'exec apache2-foreground' >> /start-apache.sh && \
     chmod +x /start-apache.sh
 
