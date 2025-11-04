@@ -83,6 +83,32 @@ RUN mkdir -p var/cache/prod var/log var/sessions \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 var/
 
+# Fix Doctrine cache configuration to avoid CacheAdapter issue
+# Override the prod doctrine config to use Symfony cache directly
+RUN cat > config/packages/prod/doctrine.yaml << 'DOCTRINEEOF'
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                metadata_cache_driver:
+                    type: pool
+                    pool: doctrine.system_cache_pool
+                query_cache_driver:
+                    type: pool
+                    pool: doctrine.system_cache_pool
+                result_cache_driver:
+                    type: pool
+                    pool: doctrine.result_cache_pool
+
+framework:
+    cache:
+        pools:
+            doctrine.result_cache_pool:
+                adapter: cache.adapter.filesystem
+            doctrine.system_cache_pool:
+                adapter: cache.adapter.filesystem
+DOCTRINEEOF
+
 # Configure Apache for Sylius
 RUN echo '<Directory /var/www/html/public>' >> /etc/apache2/apache2.conf \
     && echo '    AllowOverride All' >> /etc/apache2/apache2.conf \
