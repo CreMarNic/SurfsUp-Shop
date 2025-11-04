@@ -79,6 +79,12 @@ COPY . .
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
+# Verify critical application files exist
+RUN test -d public || (echo "ERROR: public directory missing" && exit 1) && \
+    test -d src || (echo "ERROR: src directory missing" && exit 1) && \
+    test -d config || (echo "ERROR: config directory missing" && exit 1) && \
+    echo "Application structure verified"
+
 # Create necessary directories and set permissions
 # Clear any stale cache from source - this is critical for production
 RUN rm -rf var/cache var/log var/sessions || true
@@ -151,6 +157,9 @@ return static function (array $context) {
 };
 ORIGEOF
 
+# Create a simple test file first to verify Apache works
+RUN echo '<?php phpinfo(); ?>' > /var/www/html/public/test.php
+
 # Create the bootstrap index.php
 RUN cat > /var/www/html/public/index.php << 'EOF'
 <?php
@@ -212,7 +221,16 @@ try {
 }
 EOF
 
+# Add startup verification
+RUN echo '#!/bin/bash' > /start-apache.sh && \
+    echo 'set -e' >> /start-apache.sh && \
+    echo 'echo "Starting Apache..."' >> /start-apache.sh && \
+    echo 'apachectl configtest || exit 1' >> /start-apache.sh && \
+    echo 'echo "Apache config OK, starting server..."' >> /start-apache.sh && \
+    echo 'exec apache2-foreground' >> /start-apache.sh && \
+    chmod +x /start-apache.sh
+
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["/start-apache.sh"]
 
 
