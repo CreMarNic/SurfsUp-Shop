@@ -38,6 +38,10 @@ COPY composer.json ./
 
 # Install deps (allow scripts for Symfony Runtime)
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+ENV DATABASE_URL=sqlite:///var/www/html/var/data.db
+ENV SYMFONY_ENV=prod
 # Install without scripts first to avoid symfony-cmd issues
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 # Generate autoload_runtime.php manually if it doesn't exist (Symfony Runtime requirement)
@@ -79,9 +83,11 @@ RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.
 # Clear any stale cache from source - this is critical for production
 RUN rm -rf var/cache var/log var/sessions || true
 RUN mkdir -p var/cache/prod var/log var/sessions \
+    && touch var/data.db \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
-    && chmod -R 777 var/
+    && chmod -R 777 var/ \
+    && chmod 666 var/data.db
 
 # Fix Doctrine cache configuration to avoid CacheAdapter issue
 # Override the prod doctrine config to use Symfony cache directly
