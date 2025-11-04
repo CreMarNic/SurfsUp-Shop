@@ -157,23 +157,39 @@ RUN cat > /var/www/html/public/index.php << 'EOF'
 
 declare(strict_types=1);
 
-use Symfony\Component\HttpFoundation\Request;
+// Prevent fatal errors from crashing Apache
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        http_response_code(500);
+        echo '<h1>Fatal Error</h1>';
+        echo '<p><strong>Message:</strong> ' . htmlspecialchars($error['message']) . '</p>';
+        echo '<p><strong>File:</strong> ' . htmlspecialchars($error['file']) . ':' . $error['line'] . '</p>';
+        exit;
+    }
+});
 
-// Enable error reporting temporarily to see what's wrong
+// Enable error reporting
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-// Load autoloader first
-require_once dirname(__DIR__).'/vendor/autoload.php';
-
-// Load the runtime function
-$runtime = require dirname(__DIR__).'/vendor/autoload_runtime.php';
-
-$appEnv = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'prod';
-$appDebug = (bool) ($_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? '0');
-
 try {
+    // Load autoloader first
+    if (!file_exists(dirname(__DIR__).'/vendor/autoload.php')) {
+        throw new RuntimeException('Composer autoloader not found. Run composer install.');
+    }
+    require_once dirname(__DIR__).'/vendor/autoload.php';
+
+    // Load the runtime function
+    if (!file_exists(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
+        throw new RuntimeException('autoload_runtime.php not found.');
+    }
+    $runtime = require dirname(__DIR__).'/vendor/autoload_runtime.php';
+
+    $appEnv = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'prod';
+    $appDebug = (bool) ($_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? '0');
+
     // The runtime function loads index.php.original and returns the Kernel
     $kernel = $runtime([
         'APP_ENV' => $appEnv,
@@ -181,18 +197,18 @@ try {
     ]);
 
     // Handle the request
-    $request = Request::createFromGlobals();
+    $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
     $response = $kernel->handle($request);
     $response->send();
     $kernel->terminate($request, $response);
 } catch (\Throwable $e) {
-    // Display error details
+    // Display error details instead of crashing
     http_response_code(500);
     echo '<h1>Error</h1>';
     echo '<p><strong>Message:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
     echo '<p><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
     echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
-    throw $e;
+    error_log('PHP Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
 }
 EOF
 
