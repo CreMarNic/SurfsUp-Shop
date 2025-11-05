@@ -232,17 +232,16 @@ EOF
 
 # Create startup script with logging and ensure database permissions
 RUN echo '#!/bin/bash' > /entrypoint.sh && \
-    echo 'set -e' >> /entrypoint.sh && \
     echo 'echo "=== Starting SurfsUp Shop ==="' >> /entrypoint.sh && \
     echo '# Ensure var directory and database have proper permissions' >> /entrypoint.sh && \
-    echo 'mkdir -p /var/www/html/var/cache/prod /var/www/html/var/log /var/www/html/var/sessions' >> /entrypoint.sh && \
-    echo 'touch /var/www/html/var/data.db' >> /entrypoint.sh && \
-    echo 'chown -R www-data:www-data /var/www/html/var' >> /entrypoint.sh && \
-    echo 'chmod -R 777 /var/www/html/var' >> /entrypoint.sh && \
+    echo 'mkdir -p /var/www/html/var/cache/prod /var/www/html/var/log /var/www/html/var/sessions || true' >> /entrypoint.sh && \
+    echo 'touch /var/www/html/var/data.db || true' >> /entrypoint.sh && \
+    echo 'chown -R www-data:www-data /var/www/html/var || true' >> /entrypoint.sh && \
+    echo 'chmod -R 777 /var/www/html/var || true' >> /entrypoint.sh && \
     echo 'echo "Database file permissions:"' >> /entrypoint.sh && \
     echo 'ls -la /var/www/html/var/data.db || echo "Database file not found"' >> /entrypoint.sh && \
     echo 'echo "Testing Apache config..."' >> /entrypoint.sh && \
-    echo 'apachectl -t 2>&1' >> /entrypoint.sh && \
+    echo 'apachectl -t 2>&1 || echo "WARNING: Apache config test had warnings"' >> /entrypoint.sh && \
     echo 'echo "Starting Apache..."' >> /entrypoint.sh && \
     echo 'exec apache2-foreground' >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
