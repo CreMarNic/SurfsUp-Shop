@@ -40,7 +40,7 @@ COPY composer.json ./
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
-ENV DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db
+ENV DATABASE_URL=sqlite:////var/www/html/var/data.db
 ENV SYMFONY_ENV=prod
 # Install without scripts first to avoid symfony-cmd issues
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs

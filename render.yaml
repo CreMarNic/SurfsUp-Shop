@@ -12,7 +12,7 @@ services:
       - key: APP_SECRET
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:///var/www/html/var/data.db
+        value: sqlite:////var/www/html/var/data.db
       - key: SYMFONY_ENV
         value: prod
       - key: COMPOSER_ALLOW_SUPERUSER
