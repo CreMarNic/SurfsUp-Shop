@@ -40,7 +40,7 @@ COPY composer.json ./
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
-ENV DATABASE_URL=sqlite:///var/www/html/var/data.db
+ENV DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db
 ENV SYMFONY_ENV=prod
 # Install without scripts first to avoid symfony-cmd issues
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
@@ -235,11 +235,15 @@ RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'echo "=== Starting SurfsUp Shop ==="' >> /entrypoint.sh && \
     echo '# Ensure var directory and database have proper permissions' >> /entrypoint.sh && \
     echo 'mkdir -p /var/www/html/var/cache/prod /var/www/html/var/log /var/www/html/var/sessions || true' >> /entrypoint.sh && \
+    echo 'rm -f /var/www/html/var/data.db || true' >> /entrypoint.sh && \
     echo 'touch /var/www/html/var/data.db || true' >> /entrypoint.sh && \
     echo 'chown -R www-data:www-data /var/www/html/var || true' >> /entrypoint.sh && \
     echo 'chmod -R 777 /var/www/html/var || true' >> /entrypoint.sh && \
+    echo 'chmod 666 /var/www/html/var/data.db || true' >> /entrypoint.sh && \
     echo 'echo "Database file permissions:"' >> /entrypoint.sh && \
     echo 'ls -la /var/www/html/var/data.db || echo "Database file not found"' >> /entrypoint.sh && \
+    echo 'echo "Var directory permissions:"' >> /entrypoint.sh && \
+    echo 'ls -ld /var/www/html/var || true' >> /entrypoint.sh && \
     echo 'echo "Testing Apache config..."' >> /entrypoint.sh && \
     echo 'apachectl -t 2>&1 || echo "WARNING: Apache config test had warnings"' >> /entrypoint.sh && \
     echo 'echo "Starting Apache..."' >> /entrypoint.sh && \
