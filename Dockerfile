@@ -80,7 +80,12 @@ COPY . .
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
 # Verify critical application files exist
-RUN test -d public || (echo "ERROR: public directory missing" && exit 1) && \
+RUN echo "=== Verifying application structure ===" && \
+    ls -la /var/www/html/ | head -20 && \
+    echo "=== Checking public directory ===" && \
+    ls -la /var/www/html/public/ | head -20 && \
+    test -d public || (echo "ERROR: public directory missing" && exit 1) && \
+    test -f public/index.php || (echo "ERROR: public/index.php missing" && exit 1) && \
     test -d src || (echo "ERROR: src directory missing" && exit 1) && \
     test -d config || (echo "ERROR: config directory missing" && exit 1) && \
     echo "Application structure verified"
@@ -136,6 +141,9 @@ RUN sed -ri -e 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g
 RUN echo 'RewriteEngine On' > /var/www/html/public/.htaccess \
     && echo 'RewriteCond %{REQUEST_FILENAME} !-f' >> /var/www/html/public/.htaccess \
     && echo 'RewriteRule ^(.*)$ index.php [QSA,L]' >> /var/www/html/public/.htaccess
+
+# Test Apache configuration before finalizing
+RUN apachectl -t || (echo "Apache config test failed!" && cat /etc/apache2/apache2.conf | tail -20 && exit 1)
 
 # Fix index.php to auto-execute when called via web (Symfony Runtime bootstrap)
 # Create index.php.original with just the Kernel factory (no autoload_runtime.php require)
