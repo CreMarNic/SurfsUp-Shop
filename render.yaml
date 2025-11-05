@@ -17,6 +17,10 @@ services:
         value: prod
       - key: COMPOSER_ALLOW_SUPERUSER
         value: "1"
+      - key: PHP_MEMORY_LIMIT
+        value: "256M"
+      - key: SYMFONY_CACHE_WARMUP
+        value: "0"
     healthCheckPath: /
     autoDeploy: true
 

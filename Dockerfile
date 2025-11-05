@@ -27,6 +27,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Configure PHP memory limits and optimize for production
+RUN echo 'memory_limit = 256M' >> /usr/local/etc/php/conf.d/memory.ini && \
+    echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/memory.ini && \
+    echo 'opcache.enable=1' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.memory_consumption=128' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.max_accelerated_files=10000' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.validate_timestamps=0' >> /usr/local/etc/php/conf.d/opcache.ini
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -42,6 +50,8 @@ ENV APP_ENV=prod
 ENV APP_DEBUG=0
 ENV DATABASE_URL=sqlite:////var/www/html/var/data.db
 ENV SYMFONY_ENV=prod
+ENV PHP_MEMORY_LIMIT=256M
+ENV SYMFONY_CACHE_WARMUP=0
 # Install without scripts first to avoid symfony-cmd issues
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist --ignore-platform-reqs
 # Generate autoload_runtime.php manually if it doesn't exist (Symfony Runtime requirement)
@@ -219,14 +229,25 @@ try {
     $response = $kernel->handle($request);
     $response->send();
     $kernel->terminate($request, $response);
+    
+    // Clean up after request
+    unset($request, $response, $kernel);
 } catch (\Throwable $e) {
-    // Display error details instead of crashing
+    // Display error details instead of crashing (with memory limit check)
     http_response_code(500);
+    $memoryUsage = memory_get_usage(true) / 1024 / 1024;
+    $memoryPeak = memory_get_peak_usage(true) / 1024 / 1024;
     echo '<h1>Error</h1>';
+    echo '<p><strong>Memory Usage:</strong> ' . round($memoryUsage, 2) . ' MB / Peak: ' . round($memoryPeak, 2) . ' MB</p>';
     echo '<p><strong>Message:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
     echo '<p><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
-    echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
-    error_log('PHP Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    // Limit trace depth to prevent memory issues
+    $trace = $e->getTrace();
+    $trace = array_slice($trace, 0, 10); // Only show first 10 frames
+    echo '<pre>' . htmlspecialchars($e->getMessage() . "\n" . print_r($trace, true)) . '</pre>';
+    error_log('PHP Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() . ' (Memory: ' . round($memoryUsage, 2) . 'MB)');
+    // Clean up memory
+    unset($trace, $e);
 }
 EOF
 
