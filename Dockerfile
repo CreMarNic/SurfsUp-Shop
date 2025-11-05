@@ -143,7 +143,7 @@ RUN echo 'RewriteEngine On' > /var/www/html/public/.htaccess \
     && echo 'RewriteRule ^(.*)$ index.php [QSA,L]' >> /var/www/html/public/.htaccess
 
 # Test Apache configuration before finalizing
-RUN apachectl -t || (echo "Apache config test failed!" && cat /etc/apache2/apache2.conf | tail -20 && exit 1)
+RUN apachectl -t 2>&1 || (echo "=== Apache config test failed! ===" && cat /etc/apache2/apache2.conf | tail -30 && echo "=== End of config ===" && exit 1) && echo "Apache configuration test passed"
 
 # Fix index.php to auto-execute when called via web (Symfony Runtime bootstrap)
 # Create index.php.original with just the Kernel factory (no autoload_runtime.php require)
@@ -229,7 +229,19 @@ try {
 }
 EOF
 
+# Create startup script with logging
+RUN echo '#!/bin/bash' > /entrypoint.sh && \
+    echo 'set -e' >> /entrypoint.sh && \
+    echo 'echo "=== Starting SurfsUp Shop ==="' >> /entrypoint.sh && \
+    echo 'echo "Document root: ${APACHE_DOCUMENT_ROOT:-/var/www/html/public}"' >> /entrypoint.sh && \
+    echo 'ls -la ${APACHE_DOCUMENT_ROOT:-/var/www/html/public} | head -10' >> /entrypoint.sh && \
+    echo 'echo "Testing Apache config..."' >> /entrypoint.sh && \
+    echo 'apachectl -t 2>&1' >> /entrypoint.sh && \
+    echo 'echo "Starting Apache..."' >> /entrypoint.sh && \
+    echo 'exec apache2-foreground' >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["/entrypoint.sh"]
 
 
