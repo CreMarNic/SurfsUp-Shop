@@ -92,12 +92,13 @@ RUN echo "=== Verifying application structure ===" && \
 
 # Create necessary directories and set permissions
 # Clear any stale cache from source - this is critical for production
-RUN rm -rf var/cache var/log var/sessions || true
+RUN rm -rf var/cache var/log var/sessions var/data.db || true
 RUN mkdir -p var/cache/prod var/log var/sessions \
-    && touch var/data.db \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 var/ \
+    && touch var/data.db \
+    && chown www-data:www-data var/data.db \
     && chmod 666 var/data.db
 
 # Fix Doctrine cache configuration to avoid CacheAdapter issue
@@ -229,12 +230,17 @@ try {
 }
 EOF
 
-# Create startup script with logging
+# Create startup script with logging and ensure database permissions
 RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'set -e' >> /entrypoint.sh && \
     echo 'echo "=== Starting SurfsUp Shop ==="' >> /entrypoint.sh && \
-    echo 'echo "Document root: ${APACHE_DOCUMENT_ROOT:-/var/www/html/public}"' >> /entrypoint.sh && \
-    echo 'ls -la ${APACHE_DOCUMENT_ROOT:-/var/www/html/public} | head -10' >> /entrypoint.sh && \
+    echo '# Ensure var directory and database have proper permissions' >> /entrypoint.sh && \
+    echo 'mkdir -p /var/www/html/var/cache/prod /var/www/html/var/log /var/www/html/var/sessions' >> /entrypoint.sh && \
+    echo 'touch /var/www/html/var/data.db' >> /entrypoint.sh && \
+    echo 'chown -R www-data:www-data /var/www/html/var' >> /entrypoint.sh && \
+    echo 'chmod -R 777 /var/www/html/var' >> /entrypoint.sh && \
+    echo 'echo "Database file permissions:"' >> /entrypoint.sh && \
+    echo 'ls -la /var/www/html/var/data.db || echo "Database file not found"' >> /entrypoint.sh && \
     echo 'echo "Testing Apache config..."' >> /entrypoint.sh && \
     echo 'apachectl -t 2>&1' >> /entrypoint.sh && \
     echo 'echo "Starting Apache..."' >> /entrypoint.sh && \
