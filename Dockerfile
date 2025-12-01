@@ -100,7 +100,26 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 
 # Copy the rest of the app (vendor will persist since it's not in source)
 # Railway uses repository root as build context, so copy from sylius/ subdirectory
-COPY sylius/ .
+# Copy directories explicitly to ensure all are included
+COPY sylius/public ./public
+COPY sylius/src ./src
+COPY sylius/config ./config
+COPY sylius/templates ./templates
+COPY sylius/bin ./bin
+COPY sylius/translations ./translations
+COPY sylius/assets ./assets
+# Copy other necessary files
+COPY sylius/*.php ./
+COPY sylius/*.json ./
+COPY sylius/*.yaml ./
+COPY sylius/*.yml ./
+COPY sylius/*.md ./
+COPY sylius/*.dist ./
+COPY sylius/*.xml ./
+COPY sylius/*.mjs ./
+COPY sylius/*.neon ./
+COPY sylius/*.php ./
+COPY sylius/.env* ./
 
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
