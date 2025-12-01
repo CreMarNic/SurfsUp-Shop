@@ -2,12 +2,12 @@ services:
   - type: web
     name: surfsup-shop
     env: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: Dockerfile
     dockerContext: .
-    # Note: If experiencing memory issues, consider upgrading from 'starter' to 'standard' plan
-    # Starter plan: 512MB RAM (may be insufficient for Sylius)
+    # Upgraded to Standard plan for better memory capacity
+    # Starter plan: 512MB RAM (insufficient for Sylius - causes memory limit errors)
     # Standard plan: 2GB RAM (recommended for production)
-    plan: starter
+    plan: standard
     region: oregon
     envVars:
       - key: APP_ENV
@@ -15,21 +15,14 @@ services:
       - key: APP_SECRET
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:///var/www/html/var/data.db
+        value: sqlite:////var/www/html/var/data.db
       - key: SYMFONY_ENV
         value: prod
       - key: COMPOSER_ALLOW_SUPERUSER
         value: "1"
+      - key: PHP_MEMORY_LIMIT
+        value: "128M"
+      - key: SYMFONY_CACHE_WARMUP
+        value: "0"
     healthCheckPath: /
     autoDeploy: true
-
-
-
-
-
-
-
-
-
-
-

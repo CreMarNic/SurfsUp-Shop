@@ -7,10 +7,12 @@ on:
             - "docs/**"
             - "*.md"
     workflow_dispatch: ~
-    push:
-        branches-ignore:
-            - 'dependabot/**'
-            - 'upmerge/**'
+    # Disabled push trigger to avoid CI failures on main branch deployments
+    # Uncomment below if you need CI to run on push
+    # push:
+    #     branches-ignore:
+    #         - 'dependabot/**'
+    #         - 'upmerge/**'
 
 concurrency:
     group: ci-${{ github.workflow }}-${{ github.ref }}-minimal
