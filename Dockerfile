@@ -2,7 +2,7 @@
 FROM php:8.2-apache
 
 # Install required PHP extensions and tools
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     libicu-dev \
     libxml2-dev \
@@ -11,17 +11,41 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libsqlite3-dev \
     sqlite3 \
+    pkg-config \
     zip \
     unzip \
     git \
     curl \
+    ca-certificates \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install zip pdo pdo_sqlite intl xml gd \
+    && export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH \
+    && docker-php-ext-configure pdo_sqlite --with-pdo-sqlite=/usr \
+    && docker-php-ext-install -j$(nproc) zip pdo pdo_sqlite intl xml gd mbstring opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
+
+# Configure PHP for production with memory optimization
+RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/memory.ini \
+    && echo "post_max_size=10M" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "upload_max_filesize=10M" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "realpath_cache_size=4096K" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "realpath_cache_ttl=600" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "max_input_time=300" >> /usr/local/etc/php/conf.d/memory.ini
+
+# Configure OPcache for production (memory-efficient settings)
+RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.save_comments=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini
 
 # Set working directory
 WORKDIR /var/www/html
