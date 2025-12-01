@@ -15,3 +15,8 @@ sylius_api:
 sylius_shop:
     product_grid:
         include_all_descendants: true
+
+sylius_core:
+    catalog_promotions:
+        # Reduce batch size to lower memory usage
+        batch_size: 50
