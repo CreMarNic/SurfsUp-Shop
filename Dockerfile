@@ -1,6 +1,7 @@
 # Dockerfile for Railway deployment
 # Railway uses sylius/ as build context (Dockerfile location)
 # This Dockerfile copies from current directory (sylius/)
+# Updated: 2025-12-01 - Fixed build context for Railway
 FROM php:8.2-apache
 
 # Install required PHP extensions and tools
@@ -99,7 +100,8 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 
 # Copy the rest of the app (vendor will persist since it's not in source)
 # Build context is sylius/ directory (Railway uses Dockerfile location as context)
-COPY . ./
+# Copy all files from current directory (sylius/) to container
+COPY . .
 
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
