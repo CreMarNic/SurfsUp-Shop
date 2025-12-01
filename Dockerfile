@@ -107,10 +107,11 @@ COPY sylius/config ./config
 COPY sylius/templates ./templates
 COPY sylius/bin ./bin
 COPY sylius/translations ./translations
-COPY sylius/assets ./assets
 # Copy root-level files from sylius/ (excluding directories already copied)
 COPY sylius/*.php sylius/*.json sylius/*.yaml sylius/*.yml sylius/*.md sylius/*.dist sylius/*.xml sylius/*.mjs sylius/*.neon sylius/.env* ./
 
+# Create assets directory (may be missing from build context if in .gitignore)
+RUN mkdir -p ./assets
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
