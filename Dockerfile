@@ -1,7 +1,6 @@
 # Dockerfile for Railway deployment
-# IMPORTANT: Railway must use repository ROOT as build context
-# Dockerfile path: sylius/Dockerfile
-# Build context: . (repository root)
+# Railway uses sylius/ as build context (Dockerfile location)
+# This Dockerfile copies from current directory (sylius/)
 FROM php:8.2-apache
 
 # Install required PHP extensions and tools
@@ -56,8 +55,8 @@ WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy composer file for caching
-# Always copy from sylius/ subdirectory (build context should be repository root)
-COPY sylius/composer.json ./composer.json
+# Handle both build contexts: repository root or sylius/ directory
+COPY composer.json ./composer.json
 
 # Install deps (allow scripts for Symfony Runtime)
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -99,8 +98,8 @@ EOF
 RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autoload_runtime.php" && exit 1)
 
 # Copy the rest of the app (vendor will persist since it's not in source)
-# Build context should be repository root, copy from sylius/ subdirectory
-COPY sylius/ ./
+# Build context is sylius/ directory (Railway uses Dockerfile location as context)
+COPY . ./
 
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
