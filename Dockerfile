@@ -100,12 +100,16 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 
 # Copy the rest of the app (vendor will persist since it's not in source)
 # Railway uses repository root as build context, so copy from sylius/ subdirectory
-# Copy all files and directories
-COPY sylius/ ./
-# Debug: List what was copied to see if config is there
-RUN echo "=== Files after COPY ===" && ls -la && echo "=== Checking for config ===" && ls -la config/ 2>&1 || echo "Config directory listing failed"
-# Explicitly copy config if it wasn't included (backup plan)
-RUN if [ ! -d config ]; then echo "WARNING: config not found, attempting explicit copy..." && cp -r sylius/config ./config 2>&1 || echo "Explicit copy also failed"; fi
+# Copy directories explicitly to bypass .dockerignore issues
+COPY sylius/public ./public
+COPY sylius/src ./src
+COPY sylius/config ./config
+COPY sylius/templates ./templates
+COPY sylius/bin ./bin
+COPY sylius/translations ./translations
+COPY sylius/assets ./assets
+# Copy root-level files from sylius/ (excluding directories already copied)
+COPY sylius/*.php sylius/*.json sylius/*.yaml sylius/*.yml sylius/*.md sylius/*.dist sylius/*.xml sylius/*.mjs sylius/*.neon sylius/.env* ./
 
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
