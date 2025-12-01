@@ -56,8 +56,8 @@ WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy composer file for caching
-# Handle both build contexts: repository root or sylius/ directory
-COPY composer.json ./composer.json
+# Railway uses repository root as build context, so copy from sylius/ subdirectory
+COPY sylius/composer.json ./composer.json
 
 # Install deps (allow scripts for Symfony Runtime)
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -99,9 +99,8 @@ EOF
 RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autoload_runtime.php" && exit 1)
 
 # Copy the rest of the app (vendor will persist since it's not in source)
-# Build context is sylius/ directory (Railway uses Dockerfile location as context)
-# Copy all files from current directory (sylius/) to container
-COPY . .
+# Railway uses repository root as build context, so copy from sylius/ subdirectory
+COPY sylius/ .
 
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
