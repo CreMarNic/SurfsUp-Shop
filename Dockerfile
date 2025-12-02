@@ -103,12 +103,16 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Railway uses sylius/ as build context (Dockerfile location), so copy from current directory
 # Preserve vendor directory by moving it temporarily, then restoring after COPY
 RUN mv vendor vendor-temp 2>/dev/null || true
-# Copy essential directories explicitly (bypassing .dockerignore issues)
-# The .dockerignore with * excludes everything, so we copy directories explicitly
-# This ensures we get the actual application code, not just markdown files
-COPY public/ ./public/
-COPY src/ ./src/
-COPY config/ ./config/
+# Copy essential directories explicitly
+# Debug: List what's in build context before copying
+RUN echo "=== Debug: Listing build context ===" && \
+    ls -la / 2>/dev/null | head -5 || echo "Cannot list root" && \
+    echo "=== End debug ===" || true
+# Copy essential directories - try different approaches
+# First, try copying the directories
+COPY public ./public
+COPY src ./src
+COPY config ./config
 # Create optional directories (they may be missing or excluded by .dockerignore)
 # These will be created as empty - the application should work without them
 # or they can be populated at runtime if needed
