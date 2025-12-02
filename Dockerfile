@@ -102,8 +102,20 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Railway uses sylius/ as build context (Dockerfile location), so copy from current directory
 # Preserve vendor directory by moving it temporarily, then restoring after COPY
 RUN mv vendor vendor-temp 2>/dev/null || true
-# Copy everything from current directory (sylius/) to container
-COPY . ./
+# Copy directories explicitly to bypass .dockerignore exclusions
+# The .dockerignore excludes everything (*) then includes specific patterns
+COPY public ./public
+COPY src ./src
+COPY config ./config
+COPY templates ./templates
+COPY bin ./bin
+COPY translations ./translations
+COPY assets ./assets
+# Copy root-level files that might exist
+# Using a pattern that won't fail if files don't exist - copy everything then filter
+COPY . /tmp/source/
+RUN cp -r /tmp/source/*.php /tmp/source/*.json /tmp/source/*.yaml /tmp/source/*.yml /tmp/source/*.md /tmp/source/*.dist /tmp/source/*.xml /tmp/source/*.mjs /tmp/source/*.neon /tmp/source/.env* ./ 2>/dev/null || true && \
+    rm -rf /tmp/source
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
 RUN test -d vendor || (echo "ERROR: vendor directory missing" && exit 1)
