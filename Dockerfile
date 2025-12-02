@@ -111,8 +111,16 @@ COPY sylius/*.php sylius/*.json sylius/*.yaml sylius/*.yml sylius/*.md sylius/*.
 # Create optional directories that may be missing (bin, translations, assets)
 # These are created empty if they don't exist in the build context
 RUN mkdir -p ./bin ./translations ./assets
-# Copy bin/console if it exists (critical for Symfony console commands)
-COPY sylius/bin/console ./bin/console 2>/dev/null || echo "bin/console not found, will be created by Symfony"
+# Create minimal bin/console if bin directory wasn't copied
+# Symfony will regenerate this during installation if needed
+RUN echo '#!/usr/bin/env php' > ./bin/console && \
+    echo '<?php' >> ./bin/console && \
+    echo 'require __DIR__."/../vendor/autoload.php";' >> ./bin/console && \
+    echo 'use Symfony\Bundle\FrameworkBundle\Console\Application;' >> ./bin/console && \
+    echo '$kernel = new App\Kernel($_SERVER["APP_ENV"] ?? "prod", (bool)($_SERVER["APP_DEBUG"] ?? false));' >> ./bin/console && \
+    echo '$application = new Application($kernel);' >> ./bin/console && \
+    echo '$application->run();' >> ./bin/console && \
+    chmod +x ./bin/console
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
