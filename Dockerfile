@@ -109,12 +109,13 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 COPY public/ ./public/
 COPY src/ ./src/
 COPY config/ ./config/
-COPY templates/ ./templates/ 2>/dev/null || mkdir -p ./templates
-COPY assets/ ./assets/ 2>/dev/null || mkdir -p ./assets
-COPY bin/ ./bin/ 2>/dev/null || mkdir -p ./bin
-COPY translations/ ./translations/ 2>/dev/null || mkdir -p ./translations
-# Copy any other essential files (like .env.example, etc.)
-COPY .env* ./ 2>/dev/null || true
+# Create optional directories (they may be missing or we'll copy them if they exist)
+RUN mkdir -p ./templates ./assets ./bin ./translations
+# Try to copy optional directories if they exist (non-fatal if missing)
+COPY templates/ ./templates/ 2>/dev/null || true
+COPY assets/ ./assets/ 2>/dev/null || true
+COPY bin/ ./bin/ 2>/dev/null || true
+COPY translations/ ./translations/ 2>/dev/null || true
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
