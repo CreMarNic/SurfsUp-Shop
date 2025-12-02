@@ -1,21 +1,19 @@
+# Exclude everything by default
 *
+# But include essential files and directories
 !.dockerignore
 !Dockerfile
 !render.yaml
 !composer.json
 !composer.lock
+!.env
+# Include essential directories - use both patterns to ensure they're included
+!public
 !public/
 !public/**
+!src
 !src/
 !src/**
+!config
 !config/
 !config/**
-!templates/
-!templates/**
-!assets/
-!assets/**
-!bin/
-!bin/**
-!translations/
-!translations/**
-!.env
