@@ -106,6 +106,8 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy everything first (respecting .dockerignore), then we'll clean up what we don't need
 # This ensures we get all essential directories even if Railway cache is stale
 COPY . .
+# Ensure essential directories exist BEFORE copying from Sylius/
+RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Debug: Check what we have
 RUN echo "=== After COPY . . ===" && \
     ls -la | head -20 && \
@@ -137,8 +139,6 @@ RUN echo "=== After copying from Sylius/ ===" && \
 # Keep README.md but remove other markdown files
 RUN find . -maxdepth 1 -name "*.md" ! -name "README.md" -delete 2>/dev/null || true && \
     rm -rf tests features docs .git .gitignore Sylius 2>/dev/null || true
-# Ensure essential directories exist (create as empty if missing)
-RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
