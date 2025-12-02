@@ -106,41 +106,44 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy everything first (respecting .dockerignore), then we'll clean up what we don't need
 # This ensures we get all essential directories even if Railway cache is stale
 COPY . .
-# Ensure essential directories exist BEFORE copying from Sylius/
-RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Debug: Check what we have - this MUST run to see what's in build context
-RUN echo "=== DEBUG: After COPY . . ===" && \
+# CRITICAL: Copy application code from root-level directories OR Sylius/ subdirectory
+# The application code should be at the root level (public/, src/, config/)
+# But if it's in Sylius/ subdirectory, copy it from there
+RUN echo "=== STEP 1: Check what we have after COPY . . ===" && \
     echo "Current directory:" && pwd && \
-    echo "Top-level directories:" && ls -la | head -25 && \
-    echo "=== Checking for Sylius/ ===" && \
-    (test -d Sylius && echo "Sylius/ EXISTS" && ls -la Sylius/ | head -10) || echo "Sylius/ NOT FOUND" && \
-    echo "=== Current public/ ===" && \
-    (test -d public && echo "public/ EXISTS" && ls -la public/ | head -5) || echo "public/ MISSING" && \
-    echo "=== Current src/ ===" && \
-    (test -d src && echo "src/ EXISTS" && ls -la src/ | head -5) || echo "src/ MISSING" && \
-    echo "=== Current config/ ===" && \
-    (test -d config && echo "config/ EXISTS" && ls -la config/ | head -5) || echo "config/ MISSING"
-# Check if Sylius/ subdirectory exists and copy its contents to root
-# The actual application code might be in Sylius/ subdirectory
+    echo "Top-level directories:" && ls -la | head -30 && \
+    echo "=== Checking root-level directories ===" && \
+    (test -d public && [ "$(ls -A public 2>/dev/null)" ] && echo "✓ public/ EXISTS and has files" && ls -la public/ | head -5) || echo "✗ public/ missing or empty" && \
+    (test -d src && [ "$(ls -A src 2>/dev/null)" ] && echo "✓ src/ EXISTS and has files" && ls -la src/ | head -5) || echo "✗ src/ missing or empty" && \
+    (test -d config && [ "$(ls -A config 2>/dev/null)" ] && echo "✓ config/ EXISTS and has files" && ls -la config/ | head -5) || echo "✗ config/ missing or empty" && \
+    echo "=== Checking for Sylius/ subdirectory ===" && \
+    (test -d Sylius && echo "✓ Sylius/ EXISTS" && ls -la Sylius/ | head -10) || echo "✗ Sylius/ NOT FOUND"
+# If root-level directories are empty but Sylius/ exists, copy from Sylius/
 RUN if [ -d Sylius ] && [ -d Sylius/public ] && [ "$(ls -A Sylius/public 2>/dev/null)" ]; then \
-        echo "=== FOUND Sylius/ subdirectory, copying contents to root ===" && \
+        echo "=== STEP 2: Found Sylius/ with application code, copying to root ===" && \
         echo "Copying public/..." && \
-        cp -rv Sylius/public/* ./public/ && \
+        cp -rv Sylius/public/* ./public/ 2>&1 && \
         echo "Copying src/..." && \
-        cp -rv Sylius/src/* ./src/ && \
+        cp -rv Sylius/src/* ./src/ 2>&1 && \
         echo "Copying config/..." && \
-        cp -rv Sylius/config/* ./config/ && \
-        (test -d Sylius/templates && [ "$(ls -A Sylius/templates 2>/dev/null)" ] && cp -rv Sylius/templates/* ./templates/ && echo "Copied templates/" || echo "templates/ skipped") && \
-        (test -d Sylius/assets && [ "$(ls -A Sylius/assets 2>/dev/null)" ] && cp -rv Sylius/assets/* ./assets/ && echo "Copied assets/" || echo "assets/ skipped") && \
-        (test -d Sylius/bin && [ "$(ls -A Sylius/bin 2>/dev/null)" ] && cp -rv Sylius/bin/* ./bin/ && echo "Copied bin/" || echo "bin/ skipped") && \
-        (test -d Sylius/translations && [ "$(ls -A Sylius/translations 2>/dev/null)" ] && cp -rv Sylius/translations/* ./translations/ && echo "Copied translations/" || echo "translations/ skipped") && \
+        cp -rv Sylius/config/* ./config/ 2>&1 && \
+        (test -d Sylius/templates && [ "$(ls -A Sylius/templates 2>/dev/null)" ] && cp -rv Sylius/templates/* ./templates/ 2>&1 && echo "Copied templates/" || echo "templates/ skipped") && \
+        (test -d Sylius/assets && [ "$(ls -A Sylius/assets 2>/dev/null)" ] && cp -rv Sylius/assets/* ./assets/ 2>&1 && echo "Copied assets/" || echo "assets/ skipped") && \
+        (test -d Sylius/bin && [ "$(ls -A Sylius/bin 2>/dev/null)" ] && cp -rv Sylius/bin/* ./bin/ 2>&1 && echo "Copied bin/" || echo "bin/ skipped") && \
+        (test -d Sylius/translations && [ "$(ls -A Sylius/translations 2>/dev/null)" ] && cp -rv Sylius/translations/* ./translations/ 2>&1 && echo "Copied translations/" || echo "translations/ skipped") && \
         echo "=== Copy from Sylius/ COMPLETED ==="; \
+    elif [ -d public ] && [ "$(ls -A public 2>/dev/null)" ] && [ -d src ] && [ "$(ls -A src 2>/dev/null)" ] && [ -d config ] && [ "$(ls -A config 2>/dev/null)" ]; then \
+        echo "=== STEP 2: Root-level directories already have content, skipping Sylius/ copy ==="; \
     else \
-        echo "=== Sylius/ subdirectory NOT FOUND or EMPTY ===" && \
-        echo "Checking what we have:" && \
-        ls -la | grep -E "(public|src|config)" && \
-        echo "This is a problem - application code is missing!"; \
+        echo "=== STEP 2: ERROR - Application code is missing! ===" && \
+        echo "Root-level directories:" && \
+        ls -la | grep -E "^d.*(public|src|config)" && \
+        echo "Sylius/ status:" && \
+        (test -d Sylius && echo "Sylius/ exists" || echo "Sylius/ missing") && \
+        echo "This build will fail - application code not found!"; \
     fi
+# Ensure essential directories exist (create as empty if missing - they should have content by now)
+RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Verify what we have after copy - this MUST show in logs
 RUN echo "=== VERIFICATION: After copying from Sylius/ ===" && \
     echo "public/ contents:" && (ls -la public/ | head -10 || echo "public/ is empty or missing") && \
