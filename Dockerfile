@@ -100,16 +100,13 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 
 # Copy the rest of the app (vendor will persist since it's not in source)
 # Railway uses repository root as build context, so copy from sylius/ subdirectory
-# Copy required directories explicitly to bypass .dockerignore issues
-COPY sylius/public ./public
-COPY sylius/src ./src
-COPY sylius/config ./config
-# Copy root-level files from sylius/ (excluding directories already copied)
-COPY sylius/*.php sylius/*.json sylius/*.yaml sylius/*.yml sylius/*.md sylius/*.dist sylius/*.xml sylius/*.mjs sylius/*.neon sylius/.env* ./
-
-# Create optional directories that may be missing (templates, bin, translations, assets)
-# These are created empty if they don't exist in the build context
-RUN mkdir -p ./templates ./bin ./translations ./assets
+# Copy everything from sylius/ at once to bypass .dockerignore issues
+# The .dockerignore in sylius/ doesn't work correctly when build context is root
+COPY sylius/ ./
+# Remove vendor if it was copied (we already have it from composer install)
+RUN rm -rf ./vendor 2>/dev/null || true
+# Restore vendor directory (it should already exist from earlier step)
+RUN test -d vendor || (echo "ERROR: vendor directory missing" && exit 1)
 # Create minimal bin/console if bin directory wasn't copied
 # Symfony will regenerate this during installation if needed
 RUN echo '#!/usr/bin/env php' > ./bin/console && \
