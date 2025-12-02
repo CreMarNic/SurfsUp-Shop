@@ -109,14 +109,10 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 COPY public/ ./public/
 COPY src/ ./src/
 COPY config/ ./config/
-# Create optional directories first (they may be missing or empty)
+# Create optional directories (they may be missing or excluded by .dockerignore)
+# These will be created as empty - the application should work without them
+# or they can be populated at runtime if needed
 RUN mkdir -p ./templates ./assets ./bin ./translations
-# Copy optional directories (these exist in the repo, so COPY should work)
-# If any fail due to .dockerignore, the empty directories created above will remain
-COPY templates ./templates
-COPY assets ./assets
-COPY bin ./bin
-COPY translations ./translations
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
