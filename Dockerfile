@@ -106,18 +106,33 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy everything first (respecting .dockerignore), then we'll clean up what we don't need
 # This ensures we get all essential directories even if Railway cache is stale
 COPY . .
+# Debug: Check what we have
+RUN echo "=== After COPY . . ===" && \
+    ls -la | head -20 && \
+    echo "=== Checking for Sylius/ ===" && \
+    ls -la Sylius/ 2>/dev/null | head -10 || echo "Sylius/ not found" && \
+    echo "=== Current public/ ===" && \
+    ls -la public/ 2>/dev/null | head -5 || echo "public/ empty or missing"
 # Check if Sylius/ subdirectory exists and move its contents to root if needed
 # The actual application code might be in Sylius/ subdirectory
-RUN if [ -d Sylius ] && [ -d Sylius/public ] && [ -d Sylius/src ]; then \
-        echo "Found Sylius/ subdirectory, moving contents to root..." && \
-        cp -r Sylius/public/* ./public/ 2>/dev/null || true && \
-        cp -r Sylius/src/* ./src/ 2>/dev/null || true && \
-        cp -r Sylius/config/* ./config/ 2>/dev/null || true && \
-        cp -r Sylius/templates/* ./templates/ 2>/dev/null || true && \
-        cp -r Sylius/assets/* ./assets/ 2>/dev/null || true && \
-        cp -r Sylius/bin/* ./bin/ 2>/dev/null || true && \
-        cp -r Sylius/translations/* ./translations/ 2>/dev/null || true; \
+RUN if [ -d Sylius ] && [ -d Sylius/public ]; then \
+        echo "Found Sylius/ subdirectory, copying contents to root..." && \
+        [ -d Sylius/public ] && [ "$(ls -A Sylius/public 2>/dev/null)" ] && cp -r Sylius/public/* ./public/ 2>/dev/null && echo "Copied public/" || echo "public/ copy failed or empty" && \
+        [ -d Sylius/src ] && [ "$(ls -A Sylius/src 2>/dev/null)" ] && cp -r Sylius/src/* ./src/ 2>/dev/null && echo "Copied src/" || echo "src/ copy failed or empty" && \
+        [ -d Sylius/config ] && [ "$(ls -A Sylius/config 2>/dev/null)" ] && cp -r Sylius/config/* ./config/ 2>/dev/null && echo "Copied config/" || echo "config/ copy failed or empty" && \
+        [ -d Sylius/templates ] && [ "$(ls -A Sylius/templates 2>/dev/null)" ] && cp -r Sylius/templates/* ./templates/ 2>/dev/null && echo "Copied templates/" || true && \
+        [ -d Sylius/assets ] && [ "$(ls -A Sylius/assets 2>/dev/null)" ] && cp -r Sylius/assets/* ./assets/ 2>/dev/null && echo "Copied assets/" || true && \
+        [ -d Sylius/bin ] && [ "$(ls -A Sylius/bin 2>/dev/null)" ] && cp -r Sylius/bin/* ./bin/ 2>/dev/null && echo "Copied bin/" || true && \
+        [ -d Sylius/translations ] && [ "$(ls -A Sylius/translations 2>/dev/null)" ] && cp -r Sylius/translations/* ./translations/ 2>/dev/null && echo "Copied translations/" || true && \
+        echo "Copy from Sylius/ completed"; \
+    else \
+        echo "Sylius/ subdirectory not found or doesn't contain expected structure"; \
     fi
+# Verify what we have after copy
+RUN echo "=== After copying from Sylius/ ===" && \
+    echo "public/ contents:" && ls -la public/ | head -10 && \
+    echo "src/ exists:" && test -d src && echo "yes" || echo "no" && \
+    echo "config/ contents:" && ls -la config/ | head -10
 # Remove unnecessary files/directories that were copied but we don't need
 # Keep README.md but remove other markdown files
 RUN find . -maxdepth 1 -name "*.md" ! -name "README.md" -delete 2>/dev/null || true && \
