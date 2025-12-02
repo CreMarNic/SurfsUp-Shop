@@ -1,7 +1,8 @@
 # Dockerfile for Railway deployment
 # Railway uses sylius/ as build context (Dockerfile location)
 # This Dockerfile copies from current directory (sylius/)
-# Updated: 2025-12-01 - Fixed build context for Railway
+# Updated: 2025-12-02 - Using COPY . . to respect .dockerignore patterns
+# Build ID: 4abaa4f8da - Force rebuild to clear cache
 FROM php:8.2-apache
 
 # Install required PHP extensions and tools
