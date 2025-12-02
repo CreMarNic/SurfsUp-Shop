@@ -56,8 +56,8 @@ WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy composer file for caching
-# Railway uses repository root as build context, so copy from sylius/ subdirectory
-COPY sylius/composer.json ./composer.json
+# Railway uses sylius/ as build context (Dockerfile location), so copy from current directory
+COPY composer.json ./composer.json
 
 # Install deps (allow scripts for Symfony Runtime)
 ENV COMPOSER_ALLOW_SUPERUSER=1
