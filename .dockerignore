@@ -1,19 +1,15 @@
-# Exclude everything by default
-*
-# But include essential files and directories
-!.dockerignore
-!Dockerfile
-!render.yaml
-!composer.json
-!composer.lock
-!.env
-# Include essential directories - use both patterns to ensure they're included
-!public
-!public/
-!public/**
-!src
-!src/
-!src/**
-!config
-!config/
-!config/**
+# Minimal .dockerignore - only exclude what we don't need
+# Don't exclude everything - let Docker copy what it needs
+# Only exclude specific patterns that are definitely not needed
+.git
+.gitignore
+*.md
+!README.md
+tests/
+features/
+docs/
+vendor/
+var/
+.env.local
+.env.*.local
+node_modules/
