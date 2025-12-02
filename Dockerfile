@@ -103,15 +103,13 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Railway uses sylius/ as build context (Dockerfile location), so copy from current directory
 # Preserve vendor directory by moving it temporarily, then restoring after COPY
 RUN mv vendor vendor-temp 2>/dev/null || true
-# Copy essential directories explicitly
-# These directories must exist in the build context
-COPY public ./public
-COPY src ./src
-COPY config ./config
-# Create optional directories (they may be missing or excluded by .dockerignore)
-# These will be created as empty - the application should work without them
-# or they can be populated at runtime if needed
-RUN mkdir -p ./templates ./assets ./bin ./translations
+# Copy everything first (respecting .dockerignore), then we'll clean up what we don't need
+# This ensures we get all essential directories even if Railway cache is stale
+COPY . .
+# Remove unnecessary files/directories that were copied but we don't need
+RUN rm -rf tests features docs *.md !README.md .git .gitignore 2>/dev/null || true
+# Ensure essential directories exist (create as empty if missing)
+RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
