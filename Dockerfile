@@ -104,6 +104,7 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy directories explicitly to bypass .dockerignore exclusions
 # The .dockerignore excludes everything (*) then includes specific patterns
+# Copy essential directories that are needed for the application
 COPY public ./public
 COPY src ./src
 COPY config ./config
@@ -111,11 +112,7 @@ COPY templates ./templates
 COPY bin ./bin
 COPY translations ./translations
 COPY assets ./assets
-# Copy root-level files that might exist
-# Using a pattern that won't fail if files don't exist - copy everything then filter
-COPY . /tmp/source/
-RUN cp -r /tmp/source/*.php /tmp/source/*.json /tmp/source/*.yaml /tmp/source/*.yml /tmp/source/*.md /tmp/source/*.dist /tmp/source/*.xml /tmp/source/*.mjs /tmp/source/*.neon /tmp/source/.env* ./ 2>/dev/null || true && \
-    rm -rf /tmp/source
+# Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
 RUN test -d vendor || (echo "ERROR: vendor directory missing" && exit 1)
