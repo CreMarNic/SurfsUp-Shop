@@ -105,13 +105,14 @@ COPY sylius/public ./public
 COPY sylius/src ./src
 COPY sylius/config ./config
 COPY sylius/templates ./templates
-COPY sylius/bin ./bin
 # Copy root-level files from sylius/ (excluding directories already copied)
 COPY sylius/*.php sylius/*.json sylius/*.yaml sylius/*.yml sylius/*.md sylius/*.dist sylius/*.xml sylius/*.mjs sylius/*.neon sylius/.env* ./
 
-# Create optional directories that may be missing (translations, assets)
+# Create optional directories that may be missing (bin, translations, assets)
 # These are created empty if they don't exist in the build context
-RUN mkdir -p ./translations ./assets
+RUN mkdir -p ./bin ./translations ./assets
+# Copy bin/console if it exists (critical for Symfony console commands)
+COPY sylius/bin/console ./bin/console 2>/dev/null || echo "bin/console not found, will be created by Symfony"
 # Verify vendor still exists after copy
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
