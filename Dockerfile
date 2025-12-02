@@ -109,7 +109,8 @@ RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-t
 RUN test -d vendor || (echo "ERROR: vendor directory missing" && exit 1)
 # Create minimal bin/console if bin directory wasn't copied
 # Symfony will regenerate this during installation if needed
-RUN echo '#!/usr/bin/env php' > ./bin/console && \
+RUN mkdir -p ./bin && \
+    echo '#!/usr/bin/env php' > ./bin/console && \
     echo '<?php' >> ./bin/console && \
     echo 'require __DIR__."/../vendor/autoload.php";' >> ./bin/console && \
     echo 'use Symfony\Bundle\FrameworkBundle\Console\Application;' >> ./bin/console && \
