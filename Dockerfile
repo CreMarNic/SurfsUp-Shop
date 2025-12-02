@@ -103,27 +103,18 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Railway uses sylius/ as build context (Dockerfile location), so copy from current directory
 # Preserve vendor directory by moving it temporarily, then restoring after COPY
 RUN mv vendor vendor-temp 2>/dev/null || true
-# Debug: List what's available in build context (before COPY)
-# This helps diagnose .dockerignore issues
-RUN echo "=== Build context debug (before COPY) ===" && \
-    echo "Current directory:" && pwd && \
-    echo "Files in build context (from Dockerfile location):" && \
-    ls -la / 2>/dev/null || echo "Cannot list root (expected)" && \
-    echo "=== End debug ===" || true
-# Copy everything first (respecting .dockerignore patterns)
-# The .dockerignore excludes everything (*) then includes: public/**, src/**, config/**, etc.
-# This should copy only what's included by .dockerignore
-# If .dockerignore is working, this will copy: public, src, config, templates, assets, bin, translations
-COPY . .
-# Debug: Verify what was copied
-RUN echo "=== After COPY . . ===" && \
-    ls -la /var/www/html/ | head -20 && \
-    echo "=== Checking directories ===" && \
-    test -d public && echo "✓ public exists" || echo "✗ public missing" && \
-    test -d src && echo "✓ src exists" || echo "✗ src missing" && \
-    test -d config && echo "✓ config exists" || echo "✗ config missing" || true
-# If .dockerignore is too restrictive, create missing essential directories
-RUN mkdir -p ./public ./src ./config ./templates ./bin ./translations ./assets
+# Copy essential directories explicitly (bypassing .dockerignore issues)
+# The .dockerignore with * excludes everything, so we copy directories explicitly
+# This ensures we get the actual application code, not just markdown files
+COPY public/ ./public/
+COPY src/ ./src/
+COPY config/ ./config/
+COPY templates/ ./templates/ 2>/dev/null || mkdir -p ./templates
+COPY assets/ ./assets/ 2>/dev/null || mkdir -p ./assets
+COPY bin/ ./bin/ 2>/dev/null || mkdir -p ./bin
+COPY translations/ ./translations/ 2>/dev/null || mkdir -p ./translations
+# Copy any other essential files (like .env.example, etc.)
+COPY .env* ./ 2>/dev/null || true
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
