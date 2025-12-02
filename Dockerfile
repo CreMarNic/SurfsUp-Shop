@@ -101,6 +101,7 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Copy the rest of the app (vendor will persist since it's not in source)
 # Railway uses repository root as build context, so copy from sylius/ subdirectory
 # Copy directories explicitly to bypass .dockerignore issues
+# Updated: 2025-12-01 - Removed assets copy, create directory instead
 COPY sylius/public ./public
 COPY sylius/src ./src
 COPY sylius/config ./config
