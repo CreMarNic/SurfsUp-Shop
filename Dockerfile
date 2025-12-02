@@ -104,12 +104,7 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Preserve vendor directory by moving it temporarily, then restoring after COPY
 RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy essential directories explicitly
-# Debug: List what's in build context before copying
-RUN echo "=== Debug: Listing build context ===" && \
-    ls -la / 2>/dev/null | head -5 || echo "Cannot list root" && \
-    echo "=== End debug ===" || true
-# Copy essential directories - try different approaches
-# First, try copying the directories
+# These directories must exist in the build context
 COPY public ./public
 COPY src ./src
 COPY config ./config
