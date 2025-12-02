@@ -1,11 +1,11 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "RAILPACK",
-    "buildCommand": "composer install --no-dev --optimize-autoloader --no-scripts --no-interaction"
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "sylius/Dockerfile",
+    "rootDirectory": "sylius"
   },
   "deploy": {
-    "startCommand": "vendor/bin/heroku-php-apache2 public/",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
