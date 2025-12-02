@@ -169,12 +169,23 @@ RUN mkdir -p ./bin && \
 RUN ls -la vendor/autoload_runtime.php || (echo "ERROR: vendor/autoload_runtime.php missing after COPY" && exit 1)
 
 # Verify critical application files exist
-RUN echo "=== Verifying application structure ===" && \
-    ls -la /var/www/html/ | head -20 && \
-    echo "=== Checking public directory ===" && \
-    ls -la /var/www/html/public/ | head -20 && \
+# First check what we actually have
+RUN echo "=== VERIFICATION: Checking application structure ===" && \
+    echo "Working directory:" && pwd && \
+    echo "=== All directories ===" && \
+    ls -la /var/www/html/ | head -25 && \
+    echo "=== public/ directory ===" && \
+    (test -d /var/www/html/public && echo "public/ EXISTS" && ls -la /var/www/html/public/ | head -10) || echo "public/ MISSING" && \
+    echo "=== src/ directory ===" && \
+    (test -d /var/www/html/src && echo "src/ EXISTS" && ls -la /var/www/html/src/ | head -10) || echo "src/ MISSING" && \
+    echo "=== config/ directory ===" && \
+    (test -d /var/www/html/config && echo "config/ EXISTS" && ls -la /var/www/html/config/ | head -10) || echo "config/ MISSING" && \
+    echo "=== Checking for Sylius/ ===" && \
+    (test -d /var/www/html/Sylius && echo "Sylius/ STILL EXISTS" && ls -la /var/www/html/Sylius/ | head -5) || echo "Sylius/ removed or never existed"
+# Now run the actual tests with absolute paths
+RUN cd /var/www/html && \
     test -d public || (echo "ERROR: public directory missing" && exit 1) && \
-    test -f public/index.php || (echo "ERROR: public/index.php missing" && exit 1) && \
+    test -f public/index.php || (echo "ERROR: public/index.php missing - public/ exists but is empty!" && ls -la public/ && exit 1) && \
     test -d src || (echo "ERROR: src directory missing" && exit 1) && \
     test -d config || (echo "ERROR: config directory missing" && exit 1) && \
     echo "Application structure verified"
