@@ -109,9 +109,8 @@ COPY public ./public
 COPY src ./src
 COPY config ./config
 COPY templates ./templates
-COPY bin ./bin
-# Create optional directories (translations, assets may be missing or empty)
-RUN mkdir -p ./translations ./assets
+# Create optional directories (bin, translations, assets may be missing or empty)
+RUN mkdir -p ./bin ./translations ./assets
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
 # Restore vendor directory (we installed it earlier, don't overwrite with empty one from source)
 RUN if [ -d vendor-temp ]; then rm -rf vendor 2>/dev/null || true && mv vendor-temp vendor; fi
