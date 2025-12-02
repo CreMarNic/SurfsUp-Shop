@@ -104,13 +104,12 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 COPY sylius/public ./public
 COPY sylius/src ./src
 COPY sylius/config ./config
-COPY sylius/templates ./templates
 # Copy root-level files from sylius/ (excluding directories already copied)
 COPY sylius/*.php sylius/*.json sylius/*.yaml sylius/*.yml sylius/*.md sylius/*.dist sylius/*.xml sylius/*.mjs sylius/*.neon sylius/.env* ./
 
-# Create optional directories that may be missing (bin, translations, assets)
+# Create optional directories that may be missing (templates, bin, translations, assets)
 # These are created empty if they don't exist in the build context
-RUN mkdir -p ./bin ./translations ./assets
+RUN mkdir -p ./templates ./bin ./translations ./assets
 # Create minimal bin/console if bin directory wasn't copied
 # Symfony will regenerate this during installation if needed
 RUN echo '#!/usr/bin/env php' > ./bin/console && \
