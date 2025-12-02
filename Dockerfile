@@ -108,33 +108,44 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 COPY . .
 # Ensure essential directories exist BEFORE copying from Sylius/
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Debug: Check what we have
-RUN echo "=== After COPY . . ===" && \
-    ls -la | head -20 && \
+# Debug: Check what we have - this MUST run to see what's in build context
+RUN echo "=== DEBUG: After COPY . . ===" && \
+    echo "Current directory:" && pwd && \
+    echo "Top-level directories:" && ls -la | head -25 && \
     echo "=== Checking for Sylius/ ===" && \
-    ls -la Sylius/ 2>/dev/null | head -10 || echo "Sylius/ not found" && \
+    (test -d Sylius && echo "Sylius/ EXISTS" && ls -la Sylius/ | head -10) || echo "Sylius/ NOT FOUND" && \
     echo "=== Current public/ ===" && \
-    ls -la public/ 2>/dev/null | head -5 || echo "public/ empty or missing"
-# Check if Sylius/ subdirectory exists and move its contents to root if needed
+    (test -d public && echo "public/ EXISTS" && ls -la public/ | head -5) || echo "public/ MISSING" && \
+    echo "=== Current src/ ===" && \
+    (test -d src && echo "src/ EXISTS" && ls -la src/ | head -5) || echo "src/ MISSING" && \
+    echo "=== Current config/ ===" && \
+    (test -d config && echo "config/ EXISTS" && ls -la config/ | head -5) || echo "config/ MISSING"
+# Check if Sylius/ subdirectory exists and copy its contents to root
 # The actual application code might be in Sylius/ subdirectory
-RUN if [ -d Sylius ] && [ -d Sylius/public ]; then \
-        echo "Found Sylius/ subdirectory, copying contents to root..." && \
-        [ -d Sylius/public ] && [ "$(ls -A Sylius/public 2>/dev/null)" ] && cp -r Sylius/public/* ./public/ 2>/dev/null && echo "Copied public/" || echo "public/ copy failed or empty" && \
-        [ -d Sylius/src ] && [ "$(ls -A Sylius/src 2>/dev/null)" ] && cp -r Sylius/src/* ./src/ 2>/dev/null && echo "Copied src/" || echo "src/ copy failed or empty" && \
-        [ -d Sylius/config ] && [ "$(ls -A Sylius/config 2>/dev/null)" ] && cp -r Sylius/config/* ./config/ 2>/dev/null && echo "Copied config/" || echo "config/ copy failed or empty" && \
-        [ -d Sylius/templates ] && [ "$(ls -A Sylius/templates 2>/dev/null)" ] && cp -r Sylius/templates/* ./templates/ 2>/dev/null && echo "Copied templates/" || true && \
-        [ -d Sylius/assets ] && [ "$(ls -A Sylius/assets 2>/dev/null)" ] && cp -r Sylius/assets/* ./assets/ 2>/dev/null && echo "Copied assets/" || true && \
-        [ -d Sylius/bin ] && [ "$(ls -A Sylius/bin 2>/dev/null)" ] && cp -r Sylius/bin/* ./bin/ 2>/dev/null && echo "Copied bin/" || true && \
-        [ -d Sylius/translations ] && [ "$(ls -A Sylius/translations 2>/dev/null)" ] && cp -r Sylius/translations/* ./translations/ 2>/dev/null && echo "Copied translations/" || true && \
-        echo "Copy from Sylius/ completed"; \
+RUN if [ -d Sylius ] && [ -d Sylius/public ] && [ "$(ls -A Sylius/public 2>/dev/null)" ]; then \
+        echo "=== FOUND Sylius/ subdirectory, copying contents to root ===" && \
+        echo "Copying public/..." && \
+        cp -rv Sylius/public/* ./public/ && \
+        echo "Copying src/..." && \
+        cp -rv Sylius/src/* ./src/ && \
+        echo "Copying config/..." && \
+        cp -rv Sylius/config/* ./config/ && \
+        (test -d Sylius/templates && [ "$(ls -A Sylius/templates 2>/dev/null)" ] && cp -rv Sylius/templates/* ./templates/ && echo "Copied templates/" || echo "templates/ skipped") && \
+        (test -d Sylius/assets && [ "$(ls -A Sylius/assets 2>/dev/null)" ] && cp -rv Sylius/assets/* ./assets/ && echo "Copied assets/" || echo "assets/ skipped") && \
+        (test -d Sylius/bin && [ "$(ls -A Sylius/bin 2>/dev/null)" ] && cp -rv Sylius/bin/* ./bin/ && echo "Copied bin/" || echo "bin/ skipped") && \
+        (test -d Sylius/translations && [ "$(ls -A Sylius/translations 2>/dev/null)" ] && cp -rv Sylius/translations/* ./translations/ && echo "Copied translations/" || echo "translations/ skipped") && \
+        echo "=== Copy from Sylius/ COMPLETED ==="; \
     else \
-        echo "Sylius/ subdirectory not found or doesn't contain expected structure"; \
+        echo "=== Sylius/ subdirectory NOT FOUND or EMPTY ===" && \
+        echo "Checking what we have:" && \
+        ls -la | grep -E "(public|src|config)" && \
+        echo "This is a problem - application code is missing!"; \
     fi
-# Verify what we have after copy
-RUN echo "=== After copying from Sylius/ ===" && \
-    echo "public/ contents:" && ls -la public/ | head -10 && \
-    echo "src/ exists:" && test -d src && echo "yes" || echo "no" && \
-    echo "config/ contents:" && ls -la config/ | head -10
+# Verify what we have after copy - this MUST show in logs
+RUN echo "=== VERIFICATION: After copying from Sylius/ ===" && \
+    echo "public/ contents:" && (ls -la public/ | head -10 || echo "public/ is empty or missing") && \
+    echo "src/ status:" && (test -d src && test "$(ls -A src 2>/dev/null)" && echo "src/ EXISTS and has files" || echo "src/ missing or empty") && \
+    echo "config/ contents:" && (ls -la config/ | head -10 || echo "config/ is empty or missing")
 # Remove unnecessary files/directories that were copied but we don't need
 # Keep README.md but remove other markdown files
 RUN find . -maxdepth 1 -name "*.md" ! -name "README.md" -delete 2>/dev/null || true && \
