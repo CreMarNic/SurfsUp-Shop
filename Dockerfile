@@ -106,10 +106,22 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy everything first (respecting .dockerignore), then we'll clean up what we don't need
 # This ensures we get all essential directories even if Railway cache is stale
 COPY . .
+# Check if Sylius/ subdirectory exists and move its contents to root if needed
+# The actual application code might be in Sylius/ subdirectory
+RUN if [ -d Sylius ] && [ -d Sylius/public ] && [ -d Sylius/src ]; then \
+        echo "Found Sylius/ subdirectory, moving contents to root..." && \
+        cp -r Sylius/public/* ./public/ 2>/dev/null || true && \
+        cp -r Sylius/src/* ./src/ 2>/dev/null || true && \
+        cp -r Sylius/config/* ./config/ 2>/dev/null || true && \
+        cp -r Sylius/templates/* ./templates/ 2>/dev/null || true && \
+        cp -r Sylius/assets/* ./assets/ 2>/dev/null || true && \
+        cp -r Sylius/bin/* ./bin/ 2>/dev/null || true && \
+        cp -r Sylius/translations/* ./translations/ 2>/dev/null || true; \
+    fi
 # Remove unnecessary files/directories that were copied but we don't need
 # Keep README.md but remove other markdown files
 RUN find . -maxdepth 1 -name "*.md" ! -name "README.md" -delete 2>/dev/null || true && \
-    rm -rf tests features docs .git .gitignore 2>/dev/null || true
+    rm -rf tests features docs .git .gitignore Sylius 2>/dev/null || true
 # Ensure essential directories exist (create as empty if missing)
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Root-level files (like .md, .php scripts) are not critical for runtime, skip them
