@@ -114,6 +114,7 @@ RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Copy optional directories (they should exist, but create as empty if COPY fails)
 # Note: If these directories don't exist in build context, COPY will fail
 # We create them as empty above, so if they're missing, we'll have empty directories
+# Build ID: 338083fdcf - Force rebuild to clear cache
 COPY templates ./templates
 COPY assets ./assets
 COPY bin ./bin
