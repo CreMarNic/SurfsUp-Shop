@@ -13,3 +13,6 @@ var/
 .env.local
 .env.*.local
 node_modules/
+# Explicitly include translations directory
+!translations/
+!translations/**

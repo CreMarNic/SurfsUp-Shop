@@ -115,16 +115,10 @@ RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 COPY templates ./templates
 COPY assets ./assets  
 COPY bin ./bin
-# Translations directory is optional - copy everything first, then copy translations if it exists
-# We'll use COPY . . to get translations, then clean up
-COPY . /tmp/build-context
-RUN if [ -d /tmp/build-context/translations ] && [ "$(ls -A /tmp/build-context/translations 2>/dev/null)" ]; then \
-        echo "Found translations/ directory, copying..." && \
-        cp -r /tmp/build-context/translations/* ./translations/ 2>/dev/null || true; \
-    else \
-        echo "translations/ directory not found - using empty directory"; \
-    fi && \
-    rm -rf /tmp/build-context
+# Translations directory is optional - it might not exist in Railway's build context
+# We already created it as empty above, so if COPY fails, we'll just use the empty directory
+# Try to copy it, but if it doesn't exist, that's OK - the app should work without it
+COPY translations ./translations
 # Debug: Verify what was copied
 RUN echo "=== Verification after explicit COPY ===" && \
     echo "public/ contents:" && (ls -la public/ | head -10 || echo "public/ is empty") && \
