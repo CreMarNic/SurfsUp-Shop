@@ -111,13 +111,20 @@ COPY src ./src
 COPY config ./config
 # Ensure all essential directories exist (create optional ones as empty if missing)
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Copy optional directories - these should exist in the repository
-# If they don't exist, COPY will fail, but that's OK - we created them as empty above
-# Note: We copy them explicitly to ensure they're included if they exist
+# Copy optional directories that should exist
 COPY templates ./templates
 COPY assets ./assets  
 COPY bin ./bin
-COPY translations ./translations
+# Translations directory is optional - copy everything first, then copy translations if it exists
+# We'll use COPY . . to get translations, then clean up
+COPY . /tmp/build-context
+RUN if [ -d /tmp/build-context/translations ] && [ "$(ls -A /tmp/build-context/translations 2>/dev/null)" ]; then \
+        echo "Found translations/ directory, copying..." && \
+        cp -r /tmp/build-context/translations/* ./translations/ 2>/dev/null || true; \
+    else \
+        echo "translations/ directory not found - using empty directory"; \
+    fi && \
+    rm -rf /tmp/build-context
 # Debug: Verify what was copied
 RUN echo "=== Verification after explicit COPY ===" && \
     echo "public/ contents:" && (ls -la public/ | head -10 || echo "public/ is empty") && \
