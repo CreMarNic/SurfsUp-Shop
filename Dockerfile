@@ -117,12 +117,14 @@ COPY assets ./assets
 COPY bin ./bin
 # Translations directory - copy everything to temp first, then copy translations if it exists
 # This allows us to handle the case where translations/ might not be in build context
+# We copy everything to temp, extract translations if it exists, then clean up
 COPY . /tmp/all-files
 RUN if [ -d /tmp/all-files/translations ] && [ "$(ls -A /tmp/all-files/translations 2>/dev/null)" ]; then \
-        echo "Copying translations/ directory..." && \
-        cp -r /tmp/all-files/translations/* ./translations/ 2>/dev/null || true; \
+        echo "Found translations/ directory, copying..." && \
+        cp -r /tmp/all-files/translations/* ./translations/ 2>/dev/null || true && \
+        echo "translations/ copied successfully"; \
     else \
-        echo "translations/ directory not found in build context - using empty directory"; \
+        echo "translations/ directory not found in build context - using empty directory (already created)"; \
     fi && \
     rm -rf /tmp/all-files
 # Debug: Verify what was copied
