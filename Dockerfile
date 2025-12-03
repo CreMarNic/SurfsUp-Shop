@@ -109,13 +109,13 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 COPY public ./public
 COPY src ./src
 COPY config ./config
-# Copy optional directories if they exist
-COPY templates ./templates 2>/dev/null || mkdir -p ./templates
-COPY assets ./assets 2>/dev/null || mkdir -p ./assets
-COPY bin ./bin 2>/dev/null || mkdir -p ./bin
-COPY translations ./translations 2>/dev/null || mkdir -p ./translations
-# Ensure all essential directories exist
+# Ensure all essential directories exist (create optional ones as empty if missing)
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
+# Copy optional directories if they exist (non-fatal if missing)
+COPY templates ./templates
+COPY assets ./assets
+COPY bin ./bin
+COPY translations ./translations
 # Debug: Verify what was copied
 RUN echo "=== Verification after explicit COPY ===" && \
     echo "public/ contents:" && (ls -la public/ | head -10 || echo "public/ is empty") && \
