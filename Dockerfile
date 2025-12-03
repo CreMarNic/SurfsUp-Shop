@@ -111,7 +111,9 @@ COPY src ./src
 COPY config ./config
 # Ensure all essential directories exist (create optional ones as empty if missing)
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Copy optional directories if they exist (non-fatal if missing)
+# Copy optional directories (they should exist, but create as empty if COPY fails)
+# Note: If these directories don't exist in build context, COPY will fail
+# We create them as empty above, so if they're missing, we'll have empty directories
 COPY templates ./templates
 COPY assets ./assets
 COPY bin ./bin
