@@ -111,14 +111,12 @@ COPY src ./src
 COPY config ./config
 # Ensure all essential directories exist (create optional ones as empty if missing)
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Copy optional directories (they should exist, but create as empty if COPY fails)
-# Note: If these directories don't exist in build context, COPY will fail
-# We create them as empty above, so if they're missing, we'll have empty directories
-# Build ID: 338083fdcf - Force rebuild to clear cache
-COPY templates ./templates
-COPY assets ./assets
-COPY bin ./bin
-COPY translations ./translations
+# Copy optional directories using shell to handle missing directories gracefully
+# Docker COPY fails if source doesn't exist, so we use RUN with conditional copy
+RUN if [ -d templates ] && [ "$(ls -A templates 2>/dev/null)" ]; then cp -r templates/* ./templates/ 2>/dev/null || true; fi && \
+    if [ -d assets ] && [ "$(ls -A assets 2>/dev/null)" ]; then cp -r assets/* ./assets/ 2>/dev/null || true; fi && \
+    if [ -d bin ] && [ "$(ls -A bin 2>/dev/null)" ]; then cp -r bin/* ./bin/ 2>/dev/null || true; fi && \
+    if [ -d translations ] && [ "$(ls -A translations 2>/dev/null)" ]; then cp -r translations/* ./translations/ 2>/dev/null || true; fi
 # Debug: Verify what was copied
 RUN echo "=== Verification after explicit COPY ===" && \
     echo "public/ contents:" && (ls -la public/ | head -10 || echo "public/ is empty") && \
