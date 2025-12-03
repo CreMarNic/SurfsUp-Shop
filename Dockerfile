@@ -113,13 +113,18 @@ COPY config ./config
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Copy optional directories that should exist
 COPY templates ./templates
-COPY assets ./assets  
-COPY bin ./bin
-# Translations directory - copy everything to temp first, then copy translations if it exists
-# This allows us to handle the case where translations/ might not be in build context
-# We copy everything to temp, extract translations if it exists, then clean up
+COPY assets ./assets
+# Bin and translations directories might not exist in Railway's build context
+# Copy everything to temp first, then extract bin and translations if they exist
 COPY . /tmp/all-files
-RUN if [ -d /tmp/all-files/translations ] && [ "$(ls -A /tmp/all-files/translations 2>/dev/null)" ]; then \
+RUN if [ -d /tmp/all-files/bin ] && [ "$(ls -A /tmp/all-files/bin 2>/dev/null)" ]; then \
+        echo "Found bin/ directory, copying..." && \
+        cp -r /tmp/all-files/bin/* ./bin/ 2>/dev/null || true && \
+        echo "bin/ copied successfully"; \
+    else \
+        echo "bin/ directory not found in build context - using empty directory (already created)"; \
+    fi && \
+    if [ -d /tmp/all-files/translations ] && [ "$(ls -A /tmp/all-files/translations 2>/dev/null)" ]; then \
         echo "Found translations/ directory, copying..." && \
         cp -r /tmp/all-files/translations/* ./translations/ 2>/dev/null || true && \
         echo "translations/ copied successfully"; \
