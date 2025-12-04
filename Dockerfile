@@ -111,13 +111,24 @@ COPY src ./src
 COPY config ./config
 # Ensure all essential directories exist (create optional ones as empty if missing)
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Copy optional directories that should exist
-COPY templates ./templates
-COPY assets ./assets
-# Bin and translations directories might not exist in Railway's build context
-# Copy everything to temp first, then extract bin and translations if they exist
+# Copy optional directories - they might not exist in Railway's build context
+# Copy everything to temp first, then extract optional directories if they exist
 COPY . /tmp/all-files
-RUN if [ -d /tmp/all-files/bin ] && [ "$(ls -A /tmp/all-files/bin 2>/dev/null)" ]; then \
+RUN if [ -d /tmp/all-files/templates ] && [ "$(ls -A /tmp/all-files/templates 2>/dev/null)" ]; then \
+        echo "Found templates/ directory, copying..." && \
+        cp -r /tmp/all-files/templates/* ./templates/ 2>/dev/null || true && \
+        echo "templates/ copied successfully"; \
+    else \
+        echo "templates/ directory not found in build context - using empty directory (already created)"; \
+    fi && \
+    if [ -d /tmp/all-files/assets ] && [ "$(ls -A /tmp/all-files/assets 2>/dev/null)" ]; then \
+        echo "Found assets/ directory, copying..." && \
+        cp -r /tmp/all-files/assets/* ./assets/ 2>/dev/null || true && \
+        echo "assets/ copied successfully"; \
+    else \
+        echo "assets/ directory not found in build context - using empty directory (already created)"; \
+    fi && \
+    if [ -d /tmp/all-files/bin ] && [ "$(ls -A /tmp/all-files/bin 2>/dev/null)" ]; then \
         echo "Found bin/ directory, copying..." && \
         cp -r /tmp/all-files/bin/* ./bin/ 2>/dev/null || true && \
         echo "bin/ copied successfully"; \
