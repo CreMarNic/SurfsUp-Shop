@@ -1,8 +1,10 @@
 # Dockerfile for Railway deployment
 # Railway uses sylius/ as build context (Dockerfile location)
 # This Dockerfile copies from current directory (sylius/)
-# Updated: 2025-12-04 - Using temp copy approach for all directories
-# Build ID: fc79999ab6 - Force rebuild to clear cache and use latest .dockerignore
+# Updated: 2025-12-06 - Using temp copy approach for all directories
+# Build ID: ae9e8904c2 - Force rebuild - Railway cache issue
+# IMPORTANT: This Dockerfile uses COPY . /tmp/all-files then extracts directories
+# DO NOT use direct COPY commands for directories - they fail on Railway
 FROM php:8.2-apache
 
 # Install required PHP extensions and tools
