@@ -109,28 +109,40 @@ RUN mv vendor vendor-temp 2>/dev/null || true
 # Copy everything to temp first, then extract all directories we need
 # This ensures we get all files even if direct COPY fails
 COPY . /tmp/all-files
+# Debug: Check what's in the build context
+RUN echo "=== DEBUG: What's in /tmp/all-files? ===" && \
+    ls -la /tmp/all-files/ | head -30 && \
+    echo "=== Checking for essential directories ===" && \
+    (test -d /tmp/all-files/public && echo "✓ public/ EXISTS in build context" && ls -la /tmp/all-files/public/ | head -5) || echo "✗ public/ MISSING in build context" && \
+    (test -d /tmp/all-files/src && echo "✓ src/ EXISTS in build context" && ls -la /tmp/all-files/src/ | head -5) || echo "✗ src/ MISSING in build context" && \
+    (test -d /tmp/all-files/config && echo "✓ config/ EXISTS in build context" && ls -la /tmp/all-files/config/ | head -5) || echo "✗ config/ MISSING in build context"
 # Ensure all directories exist
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Copy all essential and optional directories from temp location
 RUN echo "=== Copying directories from build context ===" && \
     if [ -d /tmp/all-files/public ] && [ "$(ls -A /tmp/all-files/public 2>/dev/null)" ]; then \
         echo "Found public/ directory, copying..." && \
-        cp -r /tmp/all-files/public/* ./public/ 2>/dev/null || true && \
-        echo "public/ copied successfully"; \
+        cp -rv /tmp/all-files/public/* ./public/ && \
+        echo "public/ copied successfully" && \
+        ls -la ./public/ | head -10; \
     else \
-        echo "ERROR: public/ directory not found in build context!"; \
+        echo "ERROR: public/ directory not found in build context!" && \
+        echo "Contents of /tmp/all-files:" && \
+        ls -la /tmp/all-files/ | head -20; \
     fi && \
     if [ -d /tmp/all-files/src ] && [ "$(ls -A /tmp/all-files/src 2>/dev/null)" ]; then \
         echo "Found src/ directory, copying..." && \
-        cp -r /tmp/all-files/src/* ./src/ 2>/dev/null || true && \
-        echo "src/ copied successfully"; \
+        cp -rv /tmp/all-files/src/* ./src/ && \
+        echo "src/ copied successfully" && \
+        ls -la ./src/ | head -10; \
     else \
         echo "ERROR: src/ directory not found in build context!"; \
     fi && \
     if [ -d /tmp/all-files/config ] && [ "$(ls -A /tmp/all-files/config 2>/dev/null)" ]; then \
         echo "Found config/ directory, copying..." && \
-        cp -r /tmp/all-files/config/* ./config/ 2>/dev/null || true && \
-        echo "config/ copied successfully"; \
+        cp -rv /tmp/all-files/config/* ./config/ && \
+        echo "config/ copied successfully" && \
+        ls -la ./config/ | head -10; \
     else \
         echo "ERROR: config/ directory not found in build context!"; \
     fi && \
