@@ -126,7 +126,13 @@ RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 RUN echo "=== Copying directories from build context ===" && \
     echo "Checking for Sylius/ subdirectory..." && \
     if [ -d /tmp/all-files/Sylius ]; then \
-        echo "Found Sylius/ subdirectory! Copying from there..." && \
+        echo "Found Sylius/ subdirectory! Contents:" && \
+        ls -la /tmp/all-files/Sylius/ | head -20 && \
+        echo "Checking for subdirectories in Sylius/..." && \
+        (test -d /tmp/all-files/Sylius/public && echo "✓ Sylius/public/ EXISTS" && ls -la /tmp/all-files/Sylius/public/ | head -5) || echo "✗ Sylius/public/ MISSING" && \
+        (test -d /tmp/all-files/Sylius/src && echo "✓ Sylius/src/ EXISTS" && ls -la /tmp/all-files/Sylius/src/ | head -5) || echo "✗ Sylius/src/ MISSING" && \
+        (test -d /tmp/all-files/Sylius/config && echo "✓ Sylius/config/ EXISTS" && ls -la /tmp/all-files/Sylius/config/ | head -5) || echo "✗ Sylius/config/ MISSING" && \
+        echo "Copying from Sylius/..." && \
         if [ -d /tmp/all-files/Sylius/public ] && [ "$(ls -A /tmp/all-files/Sylius/public 2>/dev/null)" ]; then \
             echo "Found Sylius/public/, copying..." && \
             cp -rv /tmp/all-files/Sylius/public/* ./public/ 2>&1 && \
