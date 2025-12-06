@@ -1,6 +1,5 @@
 # Minimal .dockerignore - only exclude what we don't need
-# Don't exclude everything - let Docker copy what it needs
-# Only exclude specific patterns that are definitely not needed
+# CRITICAL: Do NOT exclude public/, src/, config/ - they are essential!
 .git
 .gitignore
 *.md
@@ -13,18 +12,6 @@ var/
 .env.local
 .env.*.local
 node_modules/
-# Explicitly include essential directories to ensure they're not excluded
-!public/
-!public/**
-!src/
-!src/**
-!config/
-!config/**
-!templates/
-!templates/**
-!assets/
-!assets/**
-!bin/
-!bin/**
-!translations/
-!translations/**
+# DO NOT exclude these - they are needed:
+# public/, src/, config/, templates/, assets/, bin/, translations/
+# If we exclude them, the application won't work!
