@@ -122,64 +122,66 @@ RUN echo "=== DEBUG: What's in /tmp/all-files? ===" && \
 # Ensure all directories exist
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Copy all essential and optional directories from temp location
-# Use explicit error handling - if copy fails, show what's available
+# CRITICAL: Application code is in Sylius/ subdirectory, not at root!
 RUN echo "=== Copying directories from build context ===" && \
-    if [ -d /tmp/all-files/public ] && [ "$(ls -A /tmp/all-files/public 2>/dev/null)" ]; then \
-        echo "Found public/ directory, copying..." && \
-        cp -rv /tmp/all-files/public/* ./public/ 2>&1 && \
-        echo "public/ copied successfully" && \
-        echo "Verifying public/ after copy:" && \
-        ls -la ./public/ | head -10; \
+    echo "Checking for Sylius/ subdirectory..." && \
+    if [ -d /tmp/all-files/Sylius ]; then \
+        echo "Found Sylius/ subdirectory! Copying from there..." && \
+        if [ -d /tmp/all-files/Sylius/public ] && [ "$(ls -A /tmp/all-files/Sylius/public 2>/dev/null)" ]; then \
+            echo "Found Sylius/public/, copying..." && \
+            cp -rv /tmp/all-files/Sylius/public/* ./public/ 2>&1 && \
+            echo "public/ copied successfully" && \
+            ls -la ./public/ | head -10; \
+        else \
+            echo "ERROR: Sylius/public/ not found!" && exit 1; \
+        fi && \
+        if [ -d /tmp/all-files/Sylius/src ] && [ "$(ls -A /tmp/all-files/Sylius/src 2>/dev/null)" ]; then \
+            echo "Found Sylius/src/, copying..." && \
+            cp -rv /tmp/all-files/Sylius/src/* ./src/ 2>&1 && \
+            echo "src/ copied successfully" && \
+            ls -la ./src/ | head -10; \
+        else \
+            echo "ERROR: Sylius/src/ not found!" && exit 1; \
+        fi && \
+        if [ -d /tmp/all-files/Sylius/config ] && [ "$(ls -A /tmp/all-files/Sylius/config 2>/dev/null)" ]; then \
+            echo "Found Sylius/config/, copying..." && \
+            cp -rv /tmp/all-files/Sylius/config/* ./config/ 2>&1 && \
+            echo "config/ copied successfully" && \
+            ls -la ./config/ | head -10; \
+        else \
+            echo "ERROR: Sylius/config/ not found!" && exit 1; \
+        fi; \
     else \
-        echo "ERROR: public/ directory not found or empty in build context!" && \
+        echo "ERROR: Sylius/ subdirectory not found in build context!" && \
         echo "Contents of /tmp/all-files:" && \
         ls -la /tmp/all-files/ | head -30 && \
         exit 1; \
     fi && \
-    if [ -d /tmp/all-files/src ] && [ "$(ls -A /tmp/all-files/src 2>/dev/null)" ]; then \
-        echo "Found src/ directory, copying..." && \
-        cp -rv /tmp/all-files/src/* ./src/ 2>&1 && \
-        echo "src/ copied successfully" && \
-        echo "Verifying src/ after copy:" && \
-        ls -la ./src/ | head -10; \
-    else \
-        echo "ERROR: src/ directory not found or empty in build context!" && \
-        exit 1; \
-    fi && \
-    if [ -d /tmp/all-files/config ] && [ "$(ls -A /tmp/all-files/config 2>/dev/null)" ]; then \
-        echo "Found config/ directory, copying..." && \
-        cp -rv /tmp/all-files/config/* ./config/ 2>&1 && \
-        echo "config/ copied successfully" && \
-        echo "Verifying config/ after copy:" && \
-        ls -la ./config/ | head -10; \
-    else \
-        echo "ERROR: config/ directory not found or empty in build context!" && \
-        exit 1; \
-    fi && \
-    if [ -d /tmp/all-files/templates ] && [ "$(ls -A /tmp/all-files/templates 2>/dev/null)" ]; then \
-        echo "Found templates/ directory, copying..." && \
-        cp -r /tmp/all-files/templates/* ./templates/ 2>/dev/null || true && \
+    # Copy optional directories from Sylius/ subdirectory
+    if [ -d /tmp/all-files/Sylius/templates ] && [ "$(ls -A /tmp/all-files/Sylius/templates 2>/dev/null)" ]; then \
+        echo "Found Sylius/templates/, copying..." && \
+        cp -r /tmp/all-files/Sylius/templates/* ./templates/ 2>/dev/null || true && \
         echo "templates/ copied successfully"; \
     else \
         echo "templates/ directory not found - using empty directory"; \
     fi && \
-    if [ -d /tmp/all-files/assets ] && [ "$(ls -A /tmp/all-files/assets 2>/dev/null)" ]; then \
-        echo "Found assets/ directory, copying..." && \
-        cp -r /tmp/all-files/assets/* ./assets/ 2>/dev/null || true && \
+    if [ -d /tmp/all-files/Sylius/assets ] && [ "$(ls -A /tmp/all-files/Sylius/assets 2>/dev/null)" ]; then \
+        echo "Found Sylius/assets/, copying..." && \
+        cp -r /tmp/all-files/Sylius/assets/* ./assets/ 2>/dev/null || true && \
         echo "assets/ copied successfully"; \
     else \
         echo "assets/ directory not found - using empty directory"; \
     fi && \
-    if [ -d /tmp/all-files/bin ] && [ "$(ls -A /tmp/all-files/bin 2>/dev/null)" ]; then \
-        echo "Found bin/ directory, copying..." && \
-        cp -r /tmp/all-files/bin/* ./bin/ 2>/dev/null || true && \
+    if [ -d /tmp/all-files/Sylius/bin ] && [ "$(ls -A /tmp/all-files/Sylius/bin 2>/dev/null)" ]; then \
+        echo "Found Sylius/bin/, copying..." && \
+        cp -r /tmp/all-files/Sylius/bin/* ./bin/ 2>/dev/null || true && \
         echo "bin/ copied successfully"; \
     else \
         echo "bin/ directory not found - using empty directory"; \
     fi && \
-    if [ -d /tmp/all-files/translations ] && [ "$(ls -A /tmp/all-files/translations 2>/dev/null)" ]; then \
-        echo "Found translations/ directory, copying..." && \
-        cp -r /tmp/all-files/translations/* ./translations/ 2>/dev/null || true && \
+    if [ -d /tmp/all-files/Sylius/translations ] && [ "$(ls -A /tmp/all-files/Sylius/translations 2>/dev/null)" ]; then \
+        echo "Found Sylius/translations/, copying..." && \
+        cp -r /tmp/all-files/Sylius/translations/* ./translations/ 2>/dev/null || true && \
         echo "translations/ copied successfully"; \
     else \
         echo "translations/ directory not found - using empty directory"; \
