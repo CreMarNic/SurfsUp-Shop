@@ -114,6 +114,8 @@ RUN echo "=== DEBUG: What's in /tmp/all-files? ===" && \
     echo "Current directory:" && pwd && \
     echo "Listing /tmp/all-files:" && \
     ls -la /tmp/all-files/ | head -30 && \
+    echo "=== Finding ALL directories in build context ===" && \
+    find /tmp/all-files -maxdepth 2 -type d | sort && \
     echo "=== Checking for essential directories ===" && \
     (test -d /tmp/all-files/public && echo "✓ public/ EXISTS in build context" && echo "Contents:" && ls -la /tmp/all-files/public/ | head -10) || echo "✗ public/ MISSING in build context" && \
     (test -d /tmp/all-files/src && echo "✓ src/ EXISTS in build context" && echo "Contents:" && ls -la /tmp/all-files/src/ | head -10) || echo "✗ src/ MISSING in build context" && \
