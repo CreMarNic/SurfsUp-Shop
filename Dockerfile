@@ -122,46 +122,54 @@ RUN echo "=== DEBUG: What's in /tmp/all-files? ===" && \
 # Ensure all directories exist
 RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
 # Copy all essential and optional directories from temp location
-# CRITICAL: Application code is in Sylius/ subdirectory, not at root!
+# The application code should be at root level, but Railway's build context might not include it
+# Check both root level and Sylius/ subdirectory
 RUN echo "=== Copying directories from build context ===" && \
-    echo "Checking for Sylius/ subdirectory..." && \
-    if [ -d /tmp/all-files/Sylius ]; then \
-        echo "Found Sylius/ subdirectory! Contents:" && \
-        ls -la /tmp/all-files/Sylius/ | head -20 && \
-        echo "Checking for subdirectories in Sylius/..." && \
-        (test -d /tmp/all-files/Sylius/public && echo "✓ Sylius/public/ EXISTS" && ls -la /tmp/all-files/Sylius/public/ | head -5) || echo "✗ Sylius/public/ MISSING" && \
-        (test -d /tmp/all-files/Sylius/src && echo "✓ Sylius/src/ EXISTS" && ls -la /tmp/all-files/Sylius/src/ | head -5) || echo "✗ Sylius/src/ MISSING" && \
-        (test -d /tmp/all-files/Sylius/config && echo "✓ Sylius/config/ EXISTS" && ls -la /tmp/all-files/Sylius/config/ | head -5) || echo "✗ Sylius/config/ MISSING" && \
-        echo "Copying from Sylius/..." && \
-        if [ -d /tmp/all-files/Sylius/public ] && [ "$(ls -A /tmp/all-files/Sylius/public 2>/dev/null)" ]; then \
-            echo "Found Sylius/public/, copying..." && \
-            cp -rv /tmp/all-files/Sylius/public/* ./public/ 2>&1 && \
-            echo "public/ copied successfully" && \
-            ls -la ./public/ | head -10; \
-        else \
-            echo "ERROR: Sylius/public/ not found!" && exit 1; \
-        fi && \
-        if [ -d /tmp/all-files/Sylius/src ] && [ "$(ls -A /tmp/all-files/Sylius/src 2>/dev/null)" ]; then \
-            echo "Found Sylius/src/, copying..." && \
-            cp -rv /tmp/all-files/Sylius/src/* ./src/ 2>&1 && \
-            echo "src/ copied successfully" && \
-            ls -la ./src/ | head -10; \
-        else \
-            echo "ERROR: Sylius/src/ not found!" && exit 1; \
-        fi && \
-        if [ -d /tmp/all-files/Sylius/config ] && [ "$(ls -A /tmp/all-files/Sylius/config 2>/dev/null)" ]; then \
-            echo "Found Sylius/config/, copying..." && \
-            cp -rv /tmp/all-files/Sylius/config/* ./config/ 2>&1 && \
-            echo "config/ copied successfully" && \
-            ls -la ./config/ | head -10; \
-        else \
-            echo "ERROR: Sylius/config/ not found!" && exit 1; \
-        fi; \
+    echo "Checking root level first..." && \
+    (test -d /tmp/all-files/public && echo "✓ public/ EXISTS at root" && ls -la /tmp/all-files/public/ | head -5) || echo "✗ public/ MISSING at root" && \
+    (test -d /tmp/all-files/src && echo "✓ src/ EXISTS at root" && ls -la /tmp/all-files/src/ | head -5) || echo "✗ src/ MISSING at root" && \
+    (test -d /tmp/all-files/config && echo "✓ config/ EXISTS at root" && ls -la /tmp/all-files/config/ | head -5) || echo "✗ config/ MISSING at root" && \
+    echo "Checking Sylius/ subdirectory..." && \
+    (test -d /tmp/all-files/Sylius && echo "✓ Sylius/ EXISTS" && ls -la /tmp/all-files/Sylius/ | head -5) || echo "✗ Sylius/ MISSING" && \
+    echo "Attempting to copy from root level first..." && \
+    if [ -d /tmp/all-files/public ] && [ "$(ls -A /tmp/all-files/public 2>/dev/null)" ]; then \
+        echo "Found public/ at root, copying..." && \
+        cp -rv /tmp/all-files/public/* ./public/ 2>&1 && \
+        echo "public/ copied successfully" && \
+        ls -la ./public/ | head -10; \
+    elif [ -d /tmp/all-files/Sylius/public ] && [ "$(ls -A /tmp/all-files/Sylius/public 2>/dev/null)" ]; then \
+        echo "Found public/ in Sylius/, copying..." && \
+        cp -rv /tmp/all-files/Sylius/public/* ./public/ 2>&1 && \
+        echo "public/ copied successfully"; \
     else \
-        echo "ERROR: Sylius/ subdirectory not found in build context!" && \
-        echo "Contents of /tmp/all-files:" && \
-        ls -la /tmp/all-files/ | head -30 && \
+        echo "ERROR: public/ not found at root or in Sylius/!" && \
+        echo "Full contents of /tmp/all-files:" && \
+        find /tmp/all-files -maxdepth 2 -type d | head -20 && \
         exit 1; \
+    fi && \
+    if [ -d /tmp/all-files/src ] && [ "$(ls -A /tmp/all-files/src 2>/dev/null)" ]; then \
+        echo "Found src/ at root, copying..." && \
+        cp -rv /tmp/all-files/src/* ./src/ 2>&1 && \
+        echo "src/ copied successfully" && \
+        ls -la ./src/ | head -10; \
+    elif [ -d /tmp/all-files/Sylius/src ] && [ "$(ls -A /tmp/all-files/Sylius/src 2>/dev/null)" ]; then \
+        echo "Found src/ in Sylius/, copying..." && \
+        cp -rv /tmp/all-files/Sylius/src/* ./src/ 2>&1 && \
+        echo "src/ copied successfully"; \
+    else \
+        echo "ERROR: src/ not found at root or in Sylius/!" && exit 1; \
+    fi && \
+    if [ -d /tmp/all-files/config ] && [ "$(ls -A /tmp/all-files/config 2>/dev/null)" ]; then \
+        echo "Found config/ at root, copying..." && \
+        cp -rv /tmp/all-files/config/* ./config/ 2>&1 && \
+        echo "config/ copied successfully" && \
+        ls -la ./config/ | head -10; \
+    elif [ -d /tmp/all-files/Sylius/config ] && [ "$(ls -A /tmp/all-files/Sylius/config 2>/dev/null)" ]; then \
+        echo "Found config/ in Sylius/, copying..." && \
+        cp -rv /tmp/all-files/Sylius/config/* ./config/ 2>&1 && \
+        echo "config/ copied successfully"; \
+    else \
+        echo "ERROR: config/ not found at root or in Sylius/!" && exit 1; \
     fi && \
     # Copy optional directories from Sylius/ subdirectory
     if [ -d /tmp/all-files/Sylius/templates ] && [ "$(ls -A /tmp/all-files/Sylius/templates 2>/dev/null)" ]; then \
