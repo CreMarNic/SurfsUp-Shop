@@ -103,45 +103,66 @@ RUN test -f vendor/autoload_runtime.php || (echo "ERROR: Failed to create autolo
 # Railway uses sylius/ as build context (Dockerfile location), so copy from current directory
 # Preserve vendor directory by moving it temporarily, then restoring after COPY
 RUN mv vendor vendor-temp 2>/dev/null || true
-# CRITICAL: Copy essential directories explicitly to bypass cache issues
-# The application code is at root level (public/, src/, config/) and is tracked in git
-# Explicitly copy these directories to ensure they're included even if COPY . . is cached
-COPY public ./public
-COPY src ./src
-COPY config ./config
-# Ensure all essential directories exist (create optional ones as empty if missing)
-RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
-# Copy optional directories - they might not exist in Railway's build context
-# Copy everything to temp first, then extract optional directories if they exist
+# CRITICAL: Railway's build context is not including directories properly
+# Copy everything to temp first, then extract all directories we need
+# This ensures we get all files even if direct COPY fails
 COPY . /tmp/all-files
-RUN if [ -d /tmp/all-files/templates ] && [ "$(ls -A /tmp/all-files/templates 2>/dev/null)" ]; then \
+# Ensure all directories exist
+RUN mkdir -p ./public ./src ./config ./templates ./assets ./bin ./translations
+# Copy all essential and optional directories from temp location
+RUN echo "=== Copying directories from build context ===" && \
+    if [ -d /tmp/all-files/public ] && [ "$(ls -A /tmp/all-files/public 2>/dev/null)" ]; then \
+        echo "Found public/ directory, copying..." && \
+        cp -r /tmp/all-files/public/* ./public/ 2>/dev/null || true && \
+        echo "public/ copied successfully"; \
+    else \
+        echo "ERROR: public/ directory not found in build context!"; \
+    fi && \
+    if [ -d /tmp/all-files/src ] && [ "$(ls -A /tmp/all-files/src 2>/dev/null)" ]; then \
+        echo "Found src/ directory, copying..." && \
+        cp -r /tmp/all-files/src/* ./src/ 2>/dev/null || true && \
+        echo "src/ copied successfully"; \
+    else \
+        echo "ERROR: src/ directory not found in build context!"; \
+    fi && \
+    if [ -d /tmp/all-files/config ] && [ "$(ls -A /tmp/all-files/config 2>/dev/null)" ]; then \
+        echo "Found config/ directory, copying..." && \
+        cp -r /tmp/all-files/config/* ./config/ 2>/dev/null || true && \
+        echo "config/ copied successfully"; \
+    else \
+        echo "ERROR: config/ directory not found in build context!"; \
+    fi && \
+    if [ -d /tmp/all-files/templates ] && [ "$(ls -A /tmp/all-files/templates 2>/dev/null)" ]; then \
         echo "Found templates/ directory, copying..." && \
         cp -r /tmp/all-files/templates/* ./templates/ 2>/dev/null || true && \
         echo "templates/ copied successfully"; \
     else \
-        echo "templates/ directory not found in build context - using empty directory (already created)"; \
+        echo "templates/ directory not found - using empty directory"; \
     fi && \
     if [ -d /tmp/all-files/assets ] && [ "$(ls -A /tmp/all-files/assets 2>/dev/null)" ]; then \
         echo "Found assets/ directory, copying..." && \
         cp -r /tmp/all-files/assets/* ./assets/ 2>/dev/null || true && \
         echo "assets/ copied successfully"; \
     else \
-        echo "assets/ directory not found in build context - using empty directory (already created)"; \
+        echo "assets/ directory not found - using empty directory"; \
     fi && \
     if [ -d /tmp/all-files/bin ] && [ "$(ls -A /tmp/all-files/bin 2>/dev/null)" ]; then \
         echo "Found bin/ directory, copying..." && \
         cp -r /tmp/all-files/bin/* ./bin/ 2>/dev/null || true && \
         echo "bin/ copied successfully"; \
     else \
-        echo "bin/ directory not found in build context - using empty directory (already created)"; \
+        echo "bin/ directory not found - using empty directory"; \
     fi && \
     if [ -d /tmp/all-files/translations ] && [ "$(ls -A /tmp/all-files/translations 2>/dev/null)" ]; then \
         echo "Found translations/ directory, copying..." && \
         cp -r /tmp/all-files/translations/* ./translations/ 2>/dev/null || true && \
         echo "translations/ copied successfully"; \
     else \
-        echo "translations/ directory not found in build context - using empty directory (already created)"; \
+        echo "translations/ directory not found - using empty directory"; \
     fi && \
+    echo "=== Listing what was copied ===" && \
+    ls -la /tmp/all-files/ | head -20 && \
+    echo "=== Cleaning up temp files ===" && \
     rm -rf /tmp/all-files
 # Debug: Verify what was copied
 RUN echo "=== Verification after explicit COPY ===" && \
