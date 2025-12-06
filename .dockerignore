@@ -13,6 +13,18 @@ var/
 .env.local
 .env.*.local
 node_modules/
-# Explicitly include translations directory
+# Explicitly include essential directories to ensure they're not excluded
+!public/
+!public/**
+!src/
+!src/**
+!config/
+!config/**
+!templates/
+!templates/**
+!assets/
+!assets/**
+!bin/
+!bin/**
 !translations/
 !translations/**
