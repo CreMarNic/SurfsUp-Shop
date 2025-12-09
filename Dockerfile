@@ -302,7 +302,7 @@ framework:
 DOCTRINEEOF
 
 # Configure Apache for Sylius - minimal changes
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 # Update the default virtual host to use our document root (use actual path in RUN)
 RUN sed -ri -e 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/*.conf \
